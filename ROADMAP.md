@@ -13,15 +13,16 @@ PromptScore should become the default linting and policy layer for prompts: loca
 
 PromptScore is not trying to become a general agent platform, tracing tool, or full output-evaluation suite. Its main job is prompt quality, prompt policy, and prompt review before runtime. That focus is part of the product strategy.
 
-## Current Baseline: v0.1.0
+## Current Baseline: v0.1.1
 
-As of April 10, 2026, PromptScore v0.1.0 includes:
+As of April 10, 2026, PromptScore v0.1.1 includes:
 
 - 12 deterministic rules
 - model profiles for `_base`, `claude`, and `gpt`
 - `@promptscore/core` for Node and browser usage
 - `promptscore` CLI
 - a browser analyzer on `promptscore.dev`
+- a first-class `/docs` section on `promptscore.dev`
 - docs, examples, and release-ready build/lint/typecheck/test workflows
 
 This is a real MVP. It is useful today, but it is still missing config, batch workflows, editor integrations, suppression mechanics, and team collaboration.
@@ -48,11 +49,13 @@ This is a real MVP. It is useful today, but it is still missing config, batch wo
 
 ## Release Plan
 
+Documentation is now a near-term product priority. PromptScore teaches users why prompts improve, so the docs experience is part of the product, not just a support artifact. The immediate goal is to make `promptscore.dev/docs` the canonical home for onboarding, workflow guides, reference pages, FAQ, and release notes.
+
 | Version | Window | Theme | Planned deliverables |
 | --- | --- | --- | --- |
-| `v0.1.x` | Q2 2026 | Stabilize the MVP | Browser analyzer polish, CLI ergonomics, docs cleanup, release hygiene, smoke tests, bug fixes, packaging alignment, and a retroactive `v0.1.0` tag on the current stable commit. |
-| `v0.2.0` | Q2-Q3 2026 | Configurable prompt linting | Project config file, custom profile overrides, directory and glob analysis, richer markdown/json reporting, Gemini profile, GitHub Action, and CI-friendly policy thresholds. |
-| `v0.3.0` | Q3 2026 | Workflow and review | Saved local reports, prompt-to-prompt diffing, suppressions and baselines, import/export flows in the browser, shareable report formats, and better examples/templates for common prompt patterns. |
+| `v0.1.x` | Q2 2026 | Stabilize the MVP | Browser analyzer polish, CLI ergonomics, docs information architecture, `/docs` launch, getting-started guides, FAQ, release hygiene, smoke tests, bug fixes, packaging alignment, and a retroactive `v0.1.0` tag on the current stable commit. |
+| `v0.2.0` | Q2-Q3 2026 | Configurable prompt linting | Project config file, custom profile overrides, directory and glob analysis, richer markdown/json reporting, docs for config and CI policy, Gemini profile, GitHub Action, and CI-friendly policy thresholds. |
+| `v0.3.0` | Q3 2026 | Workflow and review | Saved local reports, prompt-to-prompt diffing, suppressions and baselines, import/export flows in the browser, shareable report formats, examples and playbooks for common prompt patterns, and stronger release/changelog documentation. |
 | `v0.4.0` | Q4 2026 | Intelligent guidance | Optional LLM-backed rules behind explicit opt-in, provider configuration, reference-backed explanations, rewrite suggestions, benchmark fixtures, and regression tracking for false positives. |
 | `v0.5.0` | Q1 2027 | Team beta | Hosted accounts, private workspaces, report history, shared policies, team review flows, cloud sync for reports, and early billing foundations. |
 | `v1.0.0` | H1 2027 | Stable platform | Stable config format, stable JSON schema, stable core API, official editor integration, production-ready GitHub Action, hosted workspaces GA, and the first enterprise-ready governance features. |
@@ -88,5 +91,6 @@ PromptScore should not declare `v1.0.0` until the following are true:
 
 - Backfill the first public git tag as `v0.1.0`.
 - Create a lightweight release checklist and changelog discipline.
-- Prioritize `v0.2.0` around config, batch analysis, and GitHub workflow adoption before expanding into hosted features.
+- Prioritize docs now: launch `/docs`, improve onboarding, and make workflow/reference content part of the release process.
+- After the docs foundation is in place, prioritize `v0.2.0` around config, batch analysis, and GitHub workflow adoption before expanding into hosted features.
 - Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently.

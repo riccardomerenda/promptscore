@@ -1,6 +1,6 @@
 {
   "name": "promptscore",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI for PromptScore — static analysis for LLM prompts.",
   "license": "MIT",
   "author": "Riccardo Merenda",

@@ -1,5 +1,7 @@
 import { Demo } from '../components/Demo';
 import { InstallTabs } from '../components/InstallTabs';
+import { SiteFooter } from '../components/SiteFooter';
+import { SiteNav } from '../components/SiteNav';
 
 const RULES = [
   { id: 'min-length', name: 'Minimum length', severity: 'warning' },
@@ -19,33 +21,12 @@ const RULES = [
 export default function Home() {
   return (
     <>
-      {/* ── Nav ── */}
-      <nav>
-        <a className="nav-brand" href="#">
-          <span className="nav-icon">PS</span>
-          PromptScore
-        </a>
-        <div className="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#features">Features</a>
-          <a href="#rules">Rules</a>
-          <a href="#install">Install</a>
-          <a
-            className="nav-cta"
-            href="https://github.com/riccardomerenda/promptscore"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-          </a>
-        </div>
-      </nav>
+      <SiteNav />
 
-      {/* ── Hero ── */}
       <section className="hero">
         <div className="hero-badge">
           <span className="badge-dot" />
-          v0.1 &middot; Open Source &middot; MIT
+          v0.1.1 &middot; Open Source &middot; MIT
         </div>
         <h1>
           Lint your prompts
@@ -78,10 +59,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Demo ── */}
       <Demo />
 
-      {/* ── How it works ── */}
       <section className="how-section" id="how">
         <div className="section-label">How it works</div>
         <h2 className="section-title">Three steps. Zero API calls.</h2>
@@ -110,7 +89,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features ── */}
       <section className="features-section" id="features">
         <div className="section-label">Features</div>
         <h2 className="section-title">
@@ -166,7 +144,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Rules ── */}
       <section className="rules-section" id="rules">
         <div className="section-label">Rules</div>
         <h2 className="section-title">What gets checked</h2>
@@ -181,21 +158,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Install ── */}
       <section className="install-section" id="install">
         <div className="section-label">Get Started</div>
         <h2 className="section-title">Up and running in seconds</h2>
         <InstallTabs />
       </section>
 
-      {/* ── Footer ── */}
-      <footer>
-        Built by{' '}
-        <a href="https://github.com/riccardomerenda" target="_blank" rel="noopener noreferrer">
-          @riccardomerenda
-        </a>{' '}
-        &middot; MIT Licensed &middot; Open Source
-      </footer>
+      <SiteFooter />
     </>
   );
 }
