@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { DM_Sans, JetBrains_Mono, Space_Mono } from 'next/font/google';
+import { DM_Sans, JetBrains_Mono, Instrument_Serif } from 'next/font/google';
 import './globals.css';
 
 const dmSans = DM_Sans({
   subsets: ['latin'],
-  variable: '--font-sans',
+  variable: '--font-body',
   display: 'swap',
 });
 
@@ -15,9 +15,10 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-const spaceMono = Space_Mono({
+const instrumentSerif = Instrument_Serif({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400'],
+  style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
 });
@@ -46,7 +47,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${jetbrainsMono.variable} ${spaceMono.variable}`}
+      className={`${dmSans.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable}`}
     >
       <body>{children}</body>
     </html>
