@@ -1,0 +1,49 @@
+{
+  "name": "promptscore",
+  "version": "0.1.0",
+  "description": "CLI for PromptScore — static analysis for LLM prompts.",
+  "license": "MIT",
+  "author": "Riccardo Merenda",
+  "homepage": "https://promptscore.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/riccardomerenda/promptscore.git",
+    "directory": "packages/cli"
+  },
+  "keywords": [
+    "llm",
+    "prompt",
+    "prompt-engineering",
+    "cli",
+    "linter"
+  ],
+  "type": "module",
+  "bin": {
+    "promptscore": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rimraf dist .turbo"
+  },
+  "dependencies": {
+    "@promptscore/core": "*",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
