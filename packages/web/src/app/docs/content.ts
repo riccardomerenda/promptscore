@@ -34,6 +34,11 @@ export const docsNavigation: DocsNavSection[] = [
         description: 'Analyze files, inline prompts, and stdin with CI-friendly exit codes.',
       },
       {
+        href: '/docs/config',
+        title: 'Config',
+        description: 'Set project-wide defaults, rule subsets, and failure thresholds.',
+      },
+      {
         href: '/docs/browser',
         title: 'Browser Analyzer',
         description: 'Use the in-browser analyzer and the browser-safe core entry.',

@@ -25,6 +25,19 @@ promptscore profiles`}</code>
       </section>
 
       <section className="docs-section">
+        <h2>Project config and policy</h2>
+        <p>
+          `analyze` can auto-load a project config file and lets CLI flags override it. Use
+          `--config` when you want to point at a specific config file, and `--fail-on` when you want
+          a one-off policy threshold in CI.
+        </p>
+        <pre className="docs-code-block">
+          <code>{`promptscore analyze prompt.txt --config ./configs/team.yaml
+promptscore analyze prompt.txt --fail-on warning`}</code>
+        </pre>
+      </section>
+
+      <section className="docs-section">
         <h2>Supported formats</h2>
         <p>`analyze` supports `text`, `json`, and `markdown` output formats.</p>
         <div className="docs-callout">
@@ -36,8 +49,14 @@ promptscore profiles`}</code>
       <section className="docs-section">
         <h2>Exit codes</h2>
         <ul className="docs-list">
-          <li>`0`: analysis completed and no error-level findings were present.</li>
-          <li>`1`: analysis completed and at least one failing rule had `error` severity.</li>
+          <li>
+            `0`: analysis completed and no findings met the active failure threshold. The default
+            threshold is `error`.
+          </li>
+          <li>
+            `1`: analysis completed and at least one finding met the active threshold from
+            `--fail-on` or project config.
+          </li>
           <li>
             `2`: PromptScore could not complete the command because of an input or runtime error.
           </li>

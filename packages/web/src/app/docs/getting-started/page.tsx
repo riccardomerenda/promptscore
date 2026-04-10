@@ -39,6 +39,19 @@ export default function GettingStartedPage() {
       </section>
 
       <section className="docs-section">
+        <h2>Save project defaults</h2>
+        <p>
+          If your team wants shared defaults, add a `promptscore.config.yaml` file to the repo and
+          let the CLI discover it automatically.
+        </p>
+        <pre className="docs-code-block">
+          <code>{`model: claude
+format: text
+fail_on_severity: warning`}</code>
+        </pre>
+      </section>
+
+      <section className="docs-section">
         <h2>Use it in code</h2>
         <p>
           In Node or server-side code, import `analyze` from `@promptscore/core`. The API returns a{' '}
@@ -60,6 +73,7 @@ console.log(format(report, 'text'));`}</code>
         <h2>Where to go next</h2>
         <ul className="docs-list">
           <li>Read CLI Guide for command details, formats, and exit codes.</li>
+          <li>Read Config to set project-wide defaults and CI policy.</li>
           <li>Read Browser Analyzer for the browser-safe entry point and client usage.</li>
           <li>Read Rules Reference to understand what the score is actually measuring.</li>
         </ul>
