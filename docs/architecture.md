@@ -12,7 +12,7 @@ raw prompt  →  parser  →  PromptAST  →  rules engine  →  RuleResult[]  �
 
 - **`@promptscore/core`** — the library. Pure TypeScript, runs in Node and browser. Exposes `analyze`, `parsePrompt`, the rule registry, the profile loader, the scorer, and reporters.
 - **`promptscore` (CLI)** — a thin `commander`-based wrapper around the core library.
-- **`@promptscore/web`** — the landing page for [promptscore.dev](https://promptscore.dev). Client-side Next.js app (ships later).
+- **`@promptscore/web`** — the landing page for [promptscore.dev](https://promptscore.dev). Static Next.js site with a guided browser preview; a fuller analyzer experience ships later.
 
 ## Parser
 
@@ -61,7 +61,7 @@ The reporter formats a `ScoreReport` into:
 
 - **text** — colored terminal output (default for CLI).
 - **json** — machine-readable, stable shape.
-- **markdown** — for docs, PRs, and the web UI.
+- **markdown** — for docs, PRs, and future browser surfaces.
 
 ## Zero heavy dependencies
 

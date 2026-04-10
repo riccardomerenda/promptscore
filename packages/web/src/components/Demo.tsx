@@ -1,65 +1,57 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-/* ── Shared data ─────────────────────────────────────────── */
+const SAMPLE_PROMPT = `You are a helpful assistant.
+Please explain TypeScript concepts.
+Be good and nice.`;
 
-const SAMPLE_PROMPT = `You are a helpful assistant. Answer questions about programming. Be good and nice. Don't be rude.`;
-
-const ANALYSIS_RESULTS = [
+const SAMPLE_RESULTS = [
   {
     id: 'min-length',
     severity: 'warning' as const,
-    passed: false,
-    label: 'Too short',
-    message: 'Prompt is only 18 words. Effective prompts typically need more detail.',
+    label: 'Minimum length',
+    message: 'The prompt is still short, so the model has limited context to work with.',
+  },
+  {
+    id: 'no-output-format',
+    severity: 'warning' as const,
+    label: 'Output format',
+    message: 'No output format is specified, so the answer shape is left to the model.',
+  },
+  {
+    id: 'no-examples',
+    severity: 'warning' as const,
+    label: 'Examples',
+    message: 'There are no examples to anchor the expected behavior or formatting.',
   },
   {
     id: 'vague-instruction',
     severity: 'warning' as const,
-    passed: false,
-    label: 'Too vague',
-    message: '"Be good and nice" lacks specifics. Define tone, constraints, and behavior.',
+    label: 'Vague language',
+    message: '"Good" and "nice" do not give the model a measurable target.',
   },
   {
-    id: 'no-output-format',
-    severity: 'error' as const,
-    passed: false,
-    label: 'No output format',
-    message: 'Specify response format (JSON, markdown, plain text, code blocks).',
-  },
-  {
-    id: 'no-examples',
+    id: 'no-context',
     severity: 'info' as const,
-    passed: false,
-    label: 'No examples',
-    message: 'Claude performs better with few-shot examples in the prompt.',
-  },
-  {
-    id: 'ambiguous-negation',
-    severity: 'warning' as const,
-    passed: false,
-    label: 'Negative instruction',
-    message: '"Don\'t be rude" is weaker than stating desired behavior positively.',
+    label: 'Context',
+    message: 'Background context is missing, so the prompt leaves audience and stakes implicit.',
   },
   {
     id: 'no-constraints',
-    severity: 'warning' as const,
-    passed: false,
-    label: 'No constraints',
-    message: 'No boundaries or limitations defined. Add scope limits or topic boundaries.',
+    severity: 'info' as const,
+    label: 'Constraints',
+    message: 'No explicit boundaries are defined for length, scope, or style.',
   },
 ];
 
-const OVERALL_SCORE = 50;
+const OVERALL_SCORE = 43;
 
 function scoreColor(score: number): string {
   if (score >= 70) return 'var(--green)';
   if (score >= 40) return 'var(--yellow)';
   return 'var(--red)';
 }
-
-/* ── Terminal view ───────────────────────────────────────── */
 
 interface TerminalLine {
   text: string;
@@ -76,120 +68,85 @@ function TerminalView() {
   const terminalLines: TerminalLine[] = [
     { text: '$ promptscore analyze prompt.txt --model claude', color: '#e2e8f0', delay: 0 },
     { text: '', delay: 200 },
-    { text: '  PromptScore v0.1.0', color: '#7c8da6', delay: 400 },
-    { text: '  Profile: claude | Rules: 12 deterministic', color: '#7c8da6', delay: 500 },
-    { text: '', delay: 600 },
+    { text: 'PromptScore - profile: claude', color: '#e2e8f0', delay: 400 },
+    { text: '', delay: 550 },
     {
-      text: '  \u2500\u2500 Score \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500',
-      color: '#546378',
-      delay: 700,
-    },
-    { text: '', delay: 750 },
-    {
-      text: '      \u2588\u2588\u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591  32 / 100',
-      color: '#ff4d4f',
-      delay: 900,
+      text: 'Overall  43/100  [#############.................]',
+      color: '#faad14',
+      delay: 800,
       big: true,
     },
-    { text: '', delay: 1000 },
+    { text: 'Score 43/100 - 4 warnings, 2 info.', color: '#7c8da6', delay: 1000 },
+    { text: '', delay: 1100 },
+    { text: 'Categories', color: '#e2e8f0', delay: 1250 },
+    { text: '  clarity          46/100 (3 rules)', color: '#7c8da6', delay: 1400 },
+    { text: '  structure       100/100 (2 rules)', color: '#7c8da6', delay: 1500 },
+    { text: '  specificity      35/100 (4 rules)', color: '#7c8da6', delay: 1600 },
+    { text: '  best-practice    50/100 (3 rules)', color: '#7c8da6', delay: 1700 },
+    { text: '', delay: 1800 },
+    { text: 'Findings', color: '#e2e8f0', delay: 1950 },
     {
-      text: '  \u2500\u2500 Issues (6) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500',
-      color: '#546378',
-      delay: 1100,
-    },
-    { text: '', delay: 1150 },
-    {
-      text: '  \u2717  no-examples          No few-shot examples provided',
-      color: '#ff4d4f',
-      delay: 1300,
-    },
-    {
-      text: '     \u2570 Add 1-3 examples of expected input/output pairs.',
-      color: '#546378',
-      delay: 1400,
-    },
-    { text: '', delay: 1450 },
-    {
-      text: '  \u2717  no-output-format     No output format specified',
-      color: '#ff4d4f',
-      delay: 1550,
-    },
-    {
-      text: '     \u2570 Define expected format: "Respond in markdown with code blocks."',
-      color: '#546378',
-      delay: 1650,
-    },
-    { text: '', delay: 1700 },
-    {
-      text: '  \u26a0  min-length           Prompt is only 18 words',
+      text: '  warn  min-length           Prompt is very short (13 words).',
       color: '#faad14',
-      delay: 1800,
+      delay: 2100,
     },
     {
-      text: '     \u2570 Expand with context, constraints, and examples.',
+      text: '        -> Add more detail about what you want and how the output should look.',
       color: '#546378',
-      delay: 1900,
+      delay: 2200,
     },
-    { text: '', delay: 1950 },
     {
-      text: '  \u26a0  vague-instruction    Undefined qualitative terms: "good", "nice"',
+      text: '  warn  no-output-format     No output format is specified.',
       color: '#faad14',
-      delay: 2050,
+      delay: 2350,
     },
     {
-      text: '     \u2570 Replace with specific behaviors: tone, length, style.',
+      text: '        -> State the exact format: JSON, bullets, markdown, or a sentence.',
       color: '#546378',
-      delay: 2150,
+      delay: 2450,
     },
-    { text: '', delay: 2200 },
     {
-      text: '  \u26a0  ambiguous-negation   Uses negation instead of positive instruction',
+      text: '  warn  no-examples          No examples provided.',
       color: '#faad14',
-      delay: 2300,
+      delay: 2600,
     },
     {
-      text: '     \u2570 Rewrite as: "Maintain a professional and respectful tone."',
+      text: '        -> Add 1-3 examples showing the expected input and output.',
       color: '#546378',
-      delay: 2400,
+      delay: 2700,
     },
-    { text: '', delay: 2450 },
     {
-      text: '  \u26a0  no-constraints       No boundaries or limitations defined',
+      text: '  warn  vague-instruction    Vague qualifiers used: good, nice.',
       color: '#faad14',
-      delay: 2550,
+      delay: 2850,
     },
     {
-      text: '     \u2570 Add scope limits, response length, or topic boundaries.',
+      text: '        -> Replace vague words with measurable criteria.',
       color: '#546378',
-      delay: 2650,
+      delay: 2950,
     },
-    { text: '', delay: 2700 },
     {
-      text: '  \u2500\u2500 Passed (3) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500',
-      color: '#546378',
-      delay: 2800,
+      text: '  info  no-context           No background context detected.',
+      color: '#60a5fa',
+      delay: 3100,
     },
-    { text: '', delay: 2850 },
-    { text: '  \u2713  no-role              Role detected', color: '#52c41a', delay: 2950 },
     {
-      text: '  \u2713  no-structured-format Short prompt \u2014 formatting OK',
-      color: '#52c41a',
-      delay: 3050,
+      text: '  info  no-constraints       No constraints detected.',
+      color: '#60a5fa',
+      delay: 3200,
     },
-    { text: '  \u2713  missing-task         Task detected', color: '#52c41a', delay: 3150 },
-    { text: '', delay: 3200 },
-    { text: '  2 errors \u00b7 4 warnings \u00b7 3 passed', color: '#7c8da6', delay: 3350 },
-    { text: '', delay: 3400 },
+    { text: '', delay: 3300 },
+    { text: '6 rules passed.', color: '#7c8da6', delay: 3450 },
   ];
 
   useEffect(() => {
     const timeouts: ReturnType<typeof setTimeout>[] = [];
-    terminalLines.forEach((line, i) => {
-      const t = setTimeout(() => {
+    terminalLines.forEach((line, index) => {
+      const timeout = setTimeout(() => {
         setLines((prev) => [...prev, line]);
-        if (i === terminalLines.length - 1) setDone(true);
+        if (index === terminalLines.length - 1) setDone(true);
       }, line.delay);
-      timeouts.push(t);
+      timeouts.push(timeout);
     });
     return () => timeouts.forEach(clearTimeout);
   }, []);
@@ -202,133 +159,94 @@ function TerminalView() {
 
   return (
     <div ref={containerRef} className="terminal-content">
-      {lines.map((line, i) => (
+      {lines.map((line, index) => (
         <div
-          key={i}
+          key={index}
           style={{
-            color: line.color || '#e2e8f0',
+            color: line.color ?? '#e2e8f0',
             minHeight: 20,
             whiteSpace: 'pre',
-            fontSize: line.big ? 16 : 13,
+            fontSize: line.big ? 15 : 13,
             fontWeight: line.big ? 700 : 400,
           }}
         >
           {line.text}
         </div>
       ))}
-      {!done && <span className="cursor-blink">{'\u258a'}</span>}
+      {!done && <span className="cursor-blink">|</span>}
     </div>
   );
 }
 
-/* ── Web view (split pane) ──────────────────────────────── */
-
-function WebView() {
-  const [prompt, setPrompt] = useState(SAMPLE_PROMPT);
-  const [analyzed, setAnalyzed] = useState(false);
-  const [animating, setAnimating] = useState(false);
-  const [model, setModel] = useState('claude');
-
-  const handleAnalyze = () => {
-    setAnimating(true);
-    setAnalyzed(false);
-    setTimeout(() => {
-      setAnalyzed(true);
-      setAnimating(false);
-    }, 1200);
-  };
-
+function BrowserPreview() {
   const circumference = 2 * Math.PI * 44;
   const offset = circumference - (OVERALL_SCORE / 100) * circumference;
 
   return (
     <div className="demo-body">
       <div className="demo-input-pane">
-        <label>Your prompt</label>
-        <textarea
-          className="demo-textarea"
-          value={prompt}
-          onChange={(e) => {
-            setPrompt(e.target.value);
-            setAnalyzed(false);
-          }}
-        />
-        <div className="demo-input-footer">
-          <div className="demo-model-select">
-            {['claude', 'gpt', 'gemini'].map((m) => (
-              <button
-                key={m}
-                className={`model-chip ${model === m ? 'active' : ''}`}
-                onClick={() => setModel(m)}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={handleAnalyze}
-            disabled={animating || !prompt.trim()}
-            className={`analyze-chip ${animating ? 'loading' : ''}`}
-          >
-            {animating ? 'Analyzing\u2026' : 'Analyze \u2192'}
-          </button>
+        <div className="demo-pane-header">
+          <label>Sample prompt</label>
+          <span className="demo-profile-chip">Claude profile</span>
         </div>
+        <textarea
+          aria-label="Sample prompt preview"
+          className="demo-textarea"
+          value={SAMPLE_PROMPT}
+          readOnly
+        />
+        <p className="demo-pane-note">
+          Landing-page preview only. Run the CLI or <code>@promptscore/core</code> for real analysis
+          today.
+        </p>
       </div>
       <div className="demo-output-pane">
-        {analyzed ? (
-          <>
-            <div className="score-ring-wrapper">
-              <div className="score-ring">
-                <svg viewBox="0 0 100 100">
-                  <circle className="score-ring-bg" cx="50" cy="50" r="44" />
-                  <circle
-                    className="score-ring-fill"
-                    cx="50"
-                    cy="50"
-                    r="44"
-                    style={{
-                      stroke: scoreColor(OVERALL_SCORE),
-                      strokeDasharray: circumference,
-                      strokeDashoffset: offset,
-                    }}
-                  />
-                </svg>
-                <div className="score-num" style={{ color: scoreColor(OVERALL_SCORE) }}>
-                  {OVERALL_SCORE}
-                </div>
-              </div>
-              <div className="score-label">PROMPT SCORE</div>
+        <div className="score-ring-wrapper">
+          <div className="score-ring">
+            <svg viewBox="0 0 100 100">
+              <circle className="score-ring-bg" cx="50" cy="50" r="44" />
+              <circle
+                className="score-ring-fill"
+                cx="50"
+                cy="50"
+                r="44"
+                style={{
+                  stroke: scoreColor(OVERALL_SCORE),
+                  strokeDasharray: circumference,
+                  strokeDashoffset: offset,
+                }}
+              />
+            </svg>
+            <div className="score-num" style={{ color: scoreColor(OVERALL_SCORE) }}>
+              {OVERALL_SCORE}
             </div>
-            <span className="output-label">Issues Found</span>
-            {ANALYSIS_RESULTS.map((r) => (
-              <div key={r.id} className="issue-item">
-                <span className={`issue-tag ${r.severity}`}>
-                  {r.severity === 'error' ? 'ERR' : r.severity === 'warning' ? 'WARN' : 'INFO'}
-                </span>
-                <strong>{r.label}</strong> &mdash; {r.message}
-              </div>
-            ))}
-          </>
-        ) : (
-          <div className="demo-placeholder">
-            <div className="placeholder-icon">&#x2726;</div>
-            <p>
-              Write a prompt and click <strong>Analyze</strong> to see results
-            </p>
           </div>
-        )}
+          <div className="score-label">SAMPLE REPORT</div>
+        </div>
+        <span className="output-label">Sample findings</span>
+        {SAMPLE_RESULTS.map((result) => (
+          <div key={result.id} className="issue-item">
+            <span className={`issue-tag ${result.severity}`}>
+              {result.severity === 'warning' ? 'WARN' : 'INFO'}
+            </span>
+            <strong>{result.label}</strong> - {result.message}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-/* ── Main demo with tabs ─────────────────────────────────── */
-
 export function Demo() {
-  const [tab, setTab] = useState<'web' | 'terminal'>('web');
+  const [tab, setTab] = useState<'preview' | 'terminal'>('preview');
 
   return (
     <section className="demo-section">
+      <div className="section-label">Guided preview</div>
+      <p className="demo-disclaimer">
+        The browser pane below is a sample walkthrough, not the full browser analyzer. The shipped
+        product today is the CLI and the core library.
+      </p>
       <div className="demo-window">
         <div className="demo-titlebar">
           <div className="demo-dots">
@@ -338,21 +256,21 @@ export function Demo() {
           </div>
           <div className="demo-tabs">
             <button
-              className={`demo-tab ${tab === 'web' ? 'active' : ''}`}
-              onClick={() => setTab('web')}
+              className={`demo-tab ${tab === 'preview' ? 'active' : ''}`}
+              onClick={() => setTab('preview')}
             >
-              Web UI
+              Browser preview
             </button>
             <button
               className={`demo-tab ${tab === 'terminal' ? 'active' : ''}`}
               onClick={() => setTab('terminal')}
             >
-              Terminal
+              CLI sample
             </button>
           </div>
           <span className="demo-version">v0.1.0</span>
         </div>
-        {tab === 'web' ? <WebView /> : <TerminalView key={Date.now()} />}
+        {tab === 'preview' ? <BrowserPreview /> : <TerminalView key="terminal" />}
       </div>
     </section>
   );

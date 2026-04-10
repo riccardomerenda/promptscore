@@ -9,6 +9,7 @@ git clone https://github.com/riccardomerenda/promptscore.git
 cd promptscore
 npm install
 npm run build
+npm run typecheck
 npm test
 ```
 
