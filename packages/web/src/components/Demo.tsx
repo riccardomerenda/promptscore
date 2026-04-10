@@ -8,117 +8,55 @@ const SAMPLE_PROMPT = `You are a helpful assistant. Answer questions about progr
 
 const ANALYSIS_RESULTS = [
   {
-    id: 'no-role',
-    severity: 'info' as const,
-    passed: true,
-    score: 80,
-    label: 'Role Definition',
-    message: 'Role detected: "helpful assistant"',
-    suggestion: 'Consider a more specific persona with domain expertise.',
-    category: 'structure',
-  },
-  {
     id: 'min-length',
     severity: 'warning' as const,
     passed: false,
-    score: 25,
-    label: 'Prompt Length',
+    label: 'Too short',
     message: 'Prompt is only 18 words. Effective prompts typically need more detail.',
-    suggestion: 'Expand with context, constraints, and examples.',
-    category: 'structure',
-  },
-  {
-    id: 'no-examples',
-    severity: 'error' as const,
-    passed: false,
-    score: 0,
-    label: 'Few-shot Examples',
-    message: 'No examples provided.',
-    suggestion: 'Add 1-3 examples of expected input/output pairs.',
-    category: 'specificity',
-  },
-  {
-    id: 'no-output-format',
-    severity: 'error' as const,
-    passed: false,
-    score: 0,
-    label: 'Output Format',
-    message: 'No output format specified.',
-    suggestion: 'Define expected format: "Respond in markdown with code blocks."',
-    category: 'specificity',
   },
   {
     id: 'vague-instruction',
     severity: 'warning' as const,
     passed: false,
-    score: 30,
-    label: 'Vague Language',
-    message: '"good", "nice" — undefined qualitative terms.',
-    suggestion: 'Replace with specific behaviors: tone, length, style.',
-    category: 'clarity',
+    label: 'Too vague',
+    message: '"Be good and nice" lacks specifics. Define tone, constraints, and behavior.',
+  },
+  {
+    id: 'no-output-format',
+    severity: 'error' as const,
+    passed: false,
+    label: 'No output format',
+    message: 'Specify response format (JSON, markdown, plain text, code blocks).',
+  },
+  {
+    id: 'no-examples',
+    severity: 'info' as const,
+    passed: false,
+    label: 'No examples',
+    message: 'Claude performs better with few-shot examples in the prompt.',
   },
   {
     id: 'ambiguous-negation',
     severity: 'warning' as const,
     passed: false,
-    score: 40,
-    label: 'Negative Instructions',
-    message: '"Don\'t be rude" uses negation instead of positive instruction.',
-    suggestion: 'Rewrite as: "Maintain a professional and respectful tone."',
-    category: 'clarity',
+    label: 'Negative instruction',
+    message: '"Don\'t be rude" is weaker than stating desired behavior positively.',
   },
   {
     id: 'no-constraints',
     severity: 'warning' as const,
     passed: false,
-    score: 10,
-    label: 'Constraints',
-    message: 'No boundaries or limitations defined.',
-    suggestion: 'Add scope limits, response length, or topic boundaries.',
-    category: 'structure',
-  },
-  {
-    id: 'no-context',
-    severity: 'info' as const,
-    passed: false,
-    score: 20,
-    label: 'Context',
-    message: 'No background context or scenario provided.',
-    suggestion: 'Describe who the user is and the use case.',
-    category: 'structure',
-  },
-  {
-    id: 'no-structured-format',
-    severity: 'info' as const,
-    passed: true,
-    score: 90,
-    label: 'Prompt Structure',
-    message: 'Short prompt — structured formatting not required.',
-    suggestion: null,
-    category: 'structure',
+    label: 'No constraints',
+    message: 'No boundaries or limitations defined. Add scope limits or topic boundaries.',
   },
 ];
 
-const OVERALL_SCORE = 32;
-
-type Severity = 'error' | 'warning' | 'info';
-
-function severityColor(s: Severity): string {
-  if (s === 'error') return '#ff4d4f';
-  if (s === 'warning') return '#faad14';
-  return '#8c8c8c';
-}
-
-function severityBg(s: Severity): string {
-  if (s === 'error') return 'rgba(255,77,79,0.08)';
-  if (s === 'warning') return 'rgba(250,173,20,0.06)';
-  return 'rgba(140,140,140,0.05)';
-}
+const OVERALL_SCORE = 50;
 
 function scoreColor(score: number): string {
-  if (score >= 70) return '#52c41a';
-  if (score >= 40) return '#faad14';
-  return '#ff4d4f';
+  if (score >= 70) return 'var(--green)';
+  if (score >= 40) return 'var(--yellow)';
+  return 'var(--red)';
 }
 
 /* ── Terminal view ───────────────────────────────────────── */
@@ -232,27 +170,15 @@ function TerminalView() {
       delay: 2800,
     },
     { text: '', delay: 2850 },
-    {
-      text: '  \u2713  no-role              Role detected',
-      color: '#52c41a',
-      delay: 2950,
-    },
+    { text: '  \u2713  no-role              Role detected', color: '#52c41a', delay: 2950 },
     {
       text: '  \u2713  no-structured-format Short prompt \u2014 formatting OK',
       color: '#52c41a',
       delay: 3050,
     },
-    {
-      text: '  \u2713  missing-task         Task detected',
-      color: '#52c41a',
-      delay: 3150,
-    },
+    { text: '  \u2713  missing-task         Task detected', color: '#52c41a', delay: 3150 },
     { text: '', delay: 3200 },
-    {
-      text: '  2 errors \u00b7 4 warnings \u00b7 3 passed',
-      color: '#7c8da6',
-      delay: 3350,
-    },
+    { text: '  2 errors \u00b7 4 warnings \u00b7 3 passed', color: '#7c8da6', delay: 3350 },
     { text: '', delay: 3400 },
   ];
 
@@ -275,12 +201,7 @@ function TerminalView() {
   }, [lines]);
 
   return (
-    <div ref={containerRef} className="terminal">
-      <div className="terminal-dots">
-        <div className="dot dot-red" />
-        <div className="dot dot-yellow" />
-        <div className="dot dot-green" />
-      </div>
+    <div ref={containerRef} className="terminal-content">
       {lines.map((line, i) => (
         <div
           key={i}
@@ -300,15 +221,13 @@ function TerminalView() {
   );
 }
 
-/* ── Web view ────────────────────────────────────────────── */
+/* ── Web view (split pane) ──────────────────────────────── */
 
 function WebView() {
   const [prompt, setPrompt] = useState(SAMPLE_PROMPT);
   const [analyzed, setAnalyzed] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [model, setModel] = useState('claude');
-  const [expandedRule, setExpandedRule] = useState<string | null>(null);
-  const [filter, setFilter] = useState('all');
 
   const handleAnalyze = () => {
     setAnimating(true);
@@ -319,173 +238,86 @@ function WebView() {
     }, 1200);
   };
 
-  const filtered =
-    filter === 'all'
-      ? ANALYSIS_RESULTS
-      : ANALYSIS_RESULTS.filter((r) => {
-          if (filter === 'errors') return r.severity === 'error';
-          if (filter === 'warnings') return r.severity === 'warning';
-          if (filter === 'passed') return r.passed && r.score >= 70;
-          return true;
-        });
-
-  const errors = ANALYSIS_RESULTS.filter((r) => r.severity === 'error' && !r.passed).length;
-  const warnings = ANALYSIS_RESULTS.filter((r) => r.severity === 'warning' && !r.passed).length;
-  const passed = ANALYSIS_RESULTS.filter((r) => r.passed || r.score >= 70).length;
+  const circumference = 2 * Math.PI * 44;
+  const offset = circumference - (OVERALL_SCORE / 100) * circumference;
 
   return (
-    <div className="webview">
-      {/* Header */}
-      <div className="webview-header">
-        <div className="webview-brand">
-          <div className="webview-icon">PS</div>
-          <span className="webview-title">promptscore</span>
-          <span className="webview-version">v0.1.0</span>
-        </div>
-        <a
-          href="https://github.com/riccardomerenda/promptscore#usage"
-          className="webview-docs-link"
-        >
-          Docs &uarr;
-        </a>
-      </div>
-
-      {/* Input */}
-      <div className="webview-input-area">
-        <div className="webview-input-header">
-          <label className="webview-label">Your prompt</label>
-          <div className="model-selector">
-            {['claude', 'gpt', 'gemini'].map((m) => (
-              <button
-                key={m}
-                onClick={() => setModel(m)}
-                className={`model-btn ${model === m ? 'active' : ''}`}
-              >
-                {m}
-              </button>
-            ))}
-          </div>
-        </div>
+    <div className="demo-body">
+      <div className="demo-input-pane">
+        <label>Your prompt</label>
         <textarea
+          className="demo-textarea"
           value={prompt}
           onChange={(e) => {
             setPrompt(e.target.value);
             setAnalyzed(false);
           }}
-          rows={4}
-          className="prompt-textarea"
         />
-        <button
-          onClick={handleAnalyze}
-          disabled={animating || !prompt.trim()}
-          className={`analyze-btn ${animating ? 'loading' : ''}`}
-        >
-          {animating ? 'Analyzing\u2026' : 'Analyze'}
-        </button>
-      </div>
-
-      {/* Results */}
-      {analyzed && (
-        <div className="results-container">
-          {/* Score ring */}
-          <div className="score-card">
-            <div className="score-ring-container">
-              <svg width="80" height="80" viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="34" fill="none" stroke="#f0eeeb" strokeWidth="6" />
-                <circle
-                  cx="40"
-                  cy="40"
-                  r="34"
-                  fill="none"
-                  stroke={scoreColor(OVERALL_SCORE)}
-                  strokeWidth="6"
-                  strokeDasharray={`${(OVERALL_SCORE / 100) * 213.6} 213.6`}
-                  strokeLinecap="round"
-                  transform="rotate(-90 40 40)"
-                  className="score-ring-fill"
-                />
-              </svg>
-              <div className="score-ring-label" style={{ color: scoreColor(OVERALL_SCORE) }}>
-                {OVERALL_SCORE}
-              </div>
-            </div>
-            <div>
-              <div className="score-title">Needs significant improvement</div>
-              <div className="score-description">
-                Your prompt has a role but lacks examples, output format, constraints, and uses
-                vague language.
-              </div>
-              <div className="score-counts">
-                <span className="count-error">{errors} errors</span>
-                <span className="count-warning">{warnings} warnings</span>
-                <span className="count-passed">{passed} passed</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Filter tabs */}
-          <div className="filter-tabs">
-            {[
-              { key: 'all', label: 'All' },
-              { key: 'errors', label: `Errors (${errors})` },
-              { key: 'warnings', label: `Warnings (${warnings})` },
-              { key: 'passed', label: `Passed (${passed})` },
-            ].map((f) => (
+        <div className="demo-input-footer">
+          <div className="demo-model-select">
+            {['claude', 'gpt', 'gemini'].map((m) => (
               <button
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={`filter-btn ${filter === f.key ? 'active' : ''}`}
+                key={m}
+                className={`model-chip ${model === m ? 'active' : ''}`}
+                onClick={() => setModel(m)}
               >
-                {f.label}
+                {m}
               </button>
             ))}
           </div>
-
-          {/* Rule cards */}
-          <div className="rule-list">
-            {filtered.map((rule) => {
-              const isPassed = rule.passed && rule.score >= 70;
-              return (
-                <div
-                  key={rule.id}
-                  onClick={() => setExpandedRule(expandedRule === rule.id ? null : rule.id)}
-                  className={`rule-card ${expandedRule === rule.id ? 'expanded' : ''}`}
-                  style={{
-                    background: severityBg(isPassed ? 'info' : rule.severity),
-                    borderColor: expandedRule === rule.id ? '#ccc8c3' : '#e8e5e0',
-                  }}
-                >
-                  <div className="rule-card-header">
-                    <div className="rule-card-left">
-                      <span
-                        className="rule-icon"
-                        style={{ color: isPassed ? '#52c41a' : severityColor(rule.severity) }}
-                      >
-                        {isPassed ? '\u2713' : rule.severity === 'error' ? '\u2717' : '\u26a0'}
-                      </span>
-                      <span className="rule-id">{rule.id}</span>
-                      <span className="rule-label">{rule.label}</span>
-                    </div>
-                    <span className="rule-score" style={{ color: scoreColor(rule.score) }}>
-                      {rule.score}
-                    </span>
-                  </div>
-                  {expandedRule === rule.id && (
-                    <div className="rule-details">
-                      <div className="rule-message">{rule.message}</div>
-                      {rule.suggestion && (
-                        <div className="rule-suggestion">
-                          <span className="suggestion-icon">&#x1f4a1;</span> {rule.suggestion}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <button
+            onClick={handleAnalyze}
+            disabled={animating || !prompt.trim()}
+            className={`analyze-chip ${animating ? 'loading' : ''}`}
+          >
+            {animating ? 'Analyzing\u2026' : 'Analyze \u2192'}
+          </button>
         </div>
-      )}
+      </div>
+      <div className="demo-output-pane">
+        {analyzed ? (
+          <>
+            <div className="score-ring-wrapper">
+              <div className="score-ring">
+                <svg viewBox="0 0 100 100">
+                  <circle className="score-ring-bg" cx="50" cy="50" r="44" />
+                  <circle
+                    className="score-ring-fill"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                    style={{
+                      stroke: scoreColor(OVERALL_SCORE),
+                      strokeDasharray: circumference,
+                      strokeDashoffset: offset,
+                    }}
+                  />
+                </svg>
+                <div className="score-num" style={{ color: scoreColor(OVERALL_SCORE) }}>
+                  {OVERALL_SCORE}
+                </div>
+              </div>
+              <div className="score-label">PROMPT SCORE</div>
+            </div>
+            <span className="output-label">Issues Found</span>
+            {ANALYSIS_RESULTS.map((r) => (
+              <div key={r.id} className="issue-item">
+                <span className={`issue-tag ${r.severity}`}>
+                  {r.severity === 'error' ? 'ERR' : r.severity === 'warning' ? 'WARN' : 'INFO'}
+                </span>
+                <strong>{r.label}</strong> &mdash; {r.message}
+              </div>
+            ))}
+          </>
+        ) : (
+          <div className="demo-placeholder">
+            <div className="placeholder-icon">&#x2726;</div>
+            <p>
+              Write a prompt and click <strong>Analyze</strong> to see results
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -497,21 +329,31 @@ export function Demo() {
 
   return (
     <section className="demo-section">
-      <div className="demo-tabs">
-        <button
-          onClick={() => setTab('web')}
-          className={`demo-tab ${tab === 'web' ? 'active' : ''}`}
-        >
-          Web UI
-        </button>
-        <button
-          onClick={() => setTab('terminal')}
-          className={`demo-tab ${tab === 'terminal' ? 'active' : ''}`}
-        >
-          Terminal
-        </button>
+      <div className="demo-window">
+        <div className="demo-titlebar">
+          <div className="demo-dots">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="demo-tabs">
+            <button
+              className={`demo-tab ${tab === 'web' ? 'active' : ''}`}
+              onClick={() => setTab('web')}
+            >
+              Web UI
+            </button>
+            <button
+              className={`demo-tab ${tab === 'terminal' ? 'active' : ''}`}
+              onClick={() => setTab('terminal')}
+            >
+              Terminal
+            </button>
+          </div>
+          <span className="demo-version">v0.1.0</span>
+        </div>
+        {tab === 'web' ? <WebView /> : <TerminalView key={Date.now()} />}
       </div>
-      {tab === 'web' ? <WebView /> : <TerminalView key={Date.now()} />}
     </section>
   );
 }
