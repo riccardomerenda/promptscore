@@ -1,30 +1,30 @@
 name: gpt
-display_name: "OpenAI GPT"
-version: "2026-04"
+display_name: 'OpenAI GPT'
+version: '2026-04'
 base: _base
 
 rules:
   no-output-format:
     severity: warning
     weight: 1.3
-    suggestion: "GPT responds well to explicit format instructions — mention JSON schema or a numbered list if relevant."
-    reference: "https://platform.openai.com/docs/guides/prompt-engineering"
+    suggestion: 'GPT responds well to explicit format instructions — mention JSON schema or a numbered list if relevant.'
+    reference: 'https://platform.openai.com/docs/guides/prompt-engineering'
   no-examples:
     severity: warning
     weight: 1.3
-    suggestion: "Use a system + user pattern with few-shot examples to anchor GPT’s behavior."
+    suggestion: 'Use a system + user pattern with few-shot examples to anchor GPT’s behavior.'
   no-structured-format:
     severity: warning
     weight: 1.1
-    suggestion: "Markdown headers and numbered sections work well for GPT."
+    suggestion: 'Markdown headers and numbered sections work well for GPT.'
   no-role:
     severity: info
     weight: 1
-    suggestion: "GPT responds well when given an explicit persona via a system message."
+    suggestion: 'GPT responds well when given an explicit persona via a system message.'
 
 best_practices:
-  - "Use a system message to set the persona and global instructions."
-  - "Structure long prompts with markdown headers (## Context, ## Task, ## Output)."
-  - "For structured output, prefer JSON schema or response_format: json_object."
-  - "Include a handful of few-shot examples if format matters."
-  - "Be explicit about what the model should not do, but always pair with what it should do."
+  - 'Use a system message to set the persona and global instructions.'
+  - 'Structure long prompts with markdown headers (## Context, ## Task, ## Output).'
+  - 'For structured output, prefer JSON schema or response_format: json_object.'
+  - 'Include a handful of few-shot examples if format matters.'
+  - 'Be explicit about what the model should not do, but always pair with what it should do.'

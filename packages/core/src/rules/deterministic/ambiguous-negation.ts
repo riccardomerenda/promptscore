@@ -5,7 +5,8 @@ const NEGATION_PATTERN = /\b(?:don't|do not|never|avoid|shouldn't|should not|mus
 export const ambiguousNegationRule: Rule = {
   id: 'ambiguous-negation',
   name: 'Ambiguous negative instructions',
-  description: 'Negative instructions ("don\'t do X") are less effective than positive ones ("do Y").',
+  description:
+    'Negative instructions ("don\'t do X") are less effective than positive ones ("do Y").',
   category: 'clarity',
   defaultSeverity: 'info',
   type: 'deterministic',

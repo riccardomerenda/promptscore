@@ -79,9 +79,7 @@ export class ProfileLoader {
     const found =
       options.profilesDir ?? findProfilesDir(__dirname) ?? findProfilesDir(process.cwd());
     if (!found) {
-      throw new Error(
-        'Could not locate a `profiles/` directory. Pass `profilesDir` explicitly.',
-      );
+      throw new Error('Could not locate a `profiles/` directory. Pass `profilesDir` explicitly.');
     }
     this.profilesDir = resolve(found);
   }

@@ -109,7 +109,9 @@ function extractRole(text: string): string | undefined {
 
 function extractTask(text: string, role?: string): string | undefined {
   // Try XML tag first
-  const xmlMatch = text.match(/<(?:task|instructions?|goal)>([\s\S]*?)<\/(?:task|instructions?|goal)>/i);
+  const xmlMatch = text.match(
+    /<(?:task|instructions?|goal)>([\s\S]*?)<\/(?:task|instructions?|goal)>/i,
+  );
   if (xmlMatch && xmlMatch[1]) return xmlMatch[1].trim();
 
   const withoutRole = role ? text.replace(role, '') : text;
@@ -210,7 +212,9 @@ function extractExamples(text: string): Example[] {
 }
 
 function extractOutputFormat(text: string): string | undefined {
-  const xmlMatch = text.match(/<(?:output|format|output_format)>([\s\S]*?)<\/(?:output|format|output_format)>/i);
+  const xmlMatch = text.match(
+    /<(?:output|format|output_format)>([\s\S]*?)<\/(?:output|format|output_format)>/i,
+  );
   if (xmlMatch && xmlMatch[1]) return xmlMatch[1].trim();
   return extractFirstMatch(text, OUTPUT_FORMAT_KEYWORDS);
 }

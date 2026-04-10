@@ -84,9 +84,7 @@ export function formatText(report: ScoreReport, options: TextReporterOptions = {
 
   const passed = report.results.filter((r) => r.passed);
   if (passed.length > 0) {
-    out.push(
-      c('dim', `${passed.length} rule${passed.length === 1 ? '' : 's'} passed.`, color),
-    );
+    out.push(c('dim', `${passed.length} rule${passed.length === 1 ? '' : 's'} passed.`, color));
   }
 
   return out.join('\n');
@@ -115,7 +113,9 @@ export function formatMarkdown(report: ScoreReport): string {
   out.push('| Category | Score | Rules |');
   out.push('| --- | --- | --- |');
   for (const category of report.categories) {
-    out.push(`| ${category.category} | ${Math.round(category.score)}/100 | ${category.rules.length} |`);
+    out.push(
+      `| ${category.category} | ${Math.round(category.score)}/100 | ${category.rules.length} |`,
+    );
   }
   out.push('');
 
@@ -141,7 +141,11 @@ export function formatMarkdown(report: ScoreReport): string {
   return out.join('\n');
 }
 
-export function format(report: ScoreReport, fmt: ReportFormat, options: TextReporterOptions = {}): string {
+export function format(
+  report: ScoreReport,
+  fmt: ReportFormat,
+  options: TextReporterOptions = {},
+): string {
   if (fmt === 'json') return formatJson(report);
   if (fmt === 'markdown') return formatMarkdown(report);
   return formatText(report, options);

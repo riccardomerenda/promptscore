@@ -1,32 +1,32 @@
 name: claude
-display_name: "Anthropic Claude"
-version: "2026-04"
+display_name: 'Anthropic Claude'
+version: '2026-04'
 base: _base
 
 rules:
   no-output-format:
     severity: warning
     weight: 1.2
-    suggestion: "Claude responds well to XML-tagged output format instructions like <output_format>."
-    reference: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering"
+    suggestion: 'Claude responds well to XML-tagged output format instructions like <output_format>.'
+    reference: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering'
   no-examples:
     severity: warning
     weight: 1.5
-    suggestion: "Claude benefits significantly from 2–3 few-shot examples inside <example> tags."
-    reference: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting"
+    suggestion: 'Claude benefits significantly from 2–3 few-shot examples inside <example> tags.'
+    reference: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/multishot-prompting'
   no-structured-format:
     severity: warning
     weight: 1.3
-    suggestion: "Claude handles XML tags particularly well for separating sections."
-    reference: "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags"
+    suggestion: 'Claude handles XML tags particularly well for separating sections.'
+    reference: 'https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/use-xml-tags'
   ambiguous-negation:
     severity: warning
     weight: 1.1
-    suggestion: "Claude follows positive framings more reliably than negations."
+    suggestion: 'Claude follows positive framings more reliably than negations.'
 
 best_practices:
-  - "Use XML tags to separate sections: <instructions>, <context>, <example>, <output_format>."
-  - "Put the most important instructions at both the beginning and the end of the prompt."
+  - 'Use XML tags to separate sections: <instructions>, <context>, <example>, <output_format>.'
+  - 'Put the most important instructions at both the beginning and the end of the prompt.'
   - "Use positive instructions ('do X') rather than negative ('don't do Y')."
-  - "Provide 2–3 examples of the expected output format."
-  - "For long prompts, wrap each section in an XML tag so Claude can refer back to it."
+  - 'Provide 2–3 examples of the expected output format.'
+  - 'For long prompts, wrap each section in an XML tag so Claude can refer back to it.'
