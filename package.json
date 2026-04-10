@@ -1,0 +1,42 @@
+{
+  "name": "promptscore-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Static analysis for LLM prompts — ESLint, but for prompts.",
+  "license": "MIT",
+  "author": "Riccardo Merenda",
+  "homepage": "https://promptscore.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/riccardomerenda/promptscore.git"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "turbo run clean && rimraf node_modules"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "packageManager": "npm@11.0.0"
+}

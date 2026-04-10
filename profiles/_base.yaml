@@ -1,0 +1,50 @@
+name: _base
+display_name: "Model-agnostic baseline"
+version: "2026-04"
+
+rules:
+  min-length:
+    severity: warning
+    weight: 1
+  max-length:
+    severity: info
+    weight: 0.8
+  no-output-format:
+    severity: warning
+    weight: 1.2
+    suggestion: "Tell the model the exact format you want (JSON schema, bullet list, single sentence, etc.)."
+  no-examples:
+    severity: warning
+    weight: 1
+    suggestion: "Add 1–3 concrete examples showing the input and the expected output."
+  no-role:
+    severity: info
+    weight: 0.8
+  no-context:
+    severity: info
+    weight: 0.9
+  ambiguous-negation:
+    severity: info
+    weight: 0.8
+  no-constraints:
+    severity: info
+    weight: 0.9
+  all-caps-abuse:
+    severity: info
+    weight: 0.6
+  vague-instruction:
+    severity: warning
+    weight: 1.1
+  missing-task:
+    severity: error
+    weight: 2
+  no-structured-format:
+    severity: warning
+    weight: 1
+
+best_practices:
+  - "Be explicit about the task — one clear instruction beats several vague ones."
+  - "Include at least one concrete example when the output format matters."
+  - "Prefer positive instructions ('do Y') over negative ones ('don't do X')."
+  - "Specify the exact output format the model should return."
+  - "Break long prompts into labeled sections."
