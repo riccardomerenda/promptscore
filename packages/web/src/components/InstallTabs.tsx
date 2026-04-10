@@ -24,25 +24,27 @@ const INSTALL_CODES: Record<string, CodeLine[]> = {
     { type: 'blank' },
     { type: 'comment', text: '# Then use anywhere' },
     { type: 'code', text: 'promptscore analyze my-prompt.txt' },
-    { type: 'code', text: 'promptscore analyze ./prompts/ --model gpt' },
+    { type: 'code', text: 'promptscore analyze ./prompts/review.txt --model gpt' },
   ],
   library: [
     { type: 'comment', text: '// Import in your project' },
     { type: 'code', text: "import { analyze } from '@promptscore/core';" },
     { type: 'blank' },
-    { type: 'code', text: 'const result = analyze(myPrompt, {' },
-    { type: 'code', text: "  model: 'claude'" },
-    { type: 'code', text: '});' },
+    { type: 'code', text: 'async function run() {' },
+    { type: 'code', text: '  const report = await analyze(myPrompt, {' },
+    { type: 'code', text: "    model: 'claude'," },
+    { type: 'code', text: '  });' },
     { type: 'blank' },
-    { type: 'code', text: 'console.log(result.score);  // 78' },
-    { type: 'code', text: 'console.log(result.issues); // [...]' },
+    { type: 'code', text: '  console.log(report.overall);' },
+    { type: 'code', text: '  console.log(report.results);' },
+    { type: 'code', text: '}' },
   ],
 };
 
 const TABS = ['npx', 'npm', 'library'] as const;
 
 export function InstallTabs() {
-  const [active, setActive] = useState<string>('npx');
+  const [active, setActive] = useState<(typeof TABS)[number]>('npx');
   const lines = INSTALL_CODES[active];
 
   return (

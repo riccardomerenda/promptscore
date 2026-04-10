@@ -2,18 +2,18 @@ import { Demo } from '../components/Demo';
 import { InstallTabs } from '../components/InstallTabs';
 
 const RULES = [
-  { id: 'R01', name: 'Prompt length check', severity: 'medium' },
-  { id: 'R02', name: 'Role / persona definition', severity: 'high' },
-  { id: 'R03', name: 'Output format specified', severity: 'high' },
-  { id: 'R04', name: 'Few-shot examples present', severity: 'medium' },
-  { id: 'R05', name: 'Constraints & boundaries', severity: 'medium' },
-  { id: 'R06', name: 'Vague language detection', severity: 'low' },
-  { id: 'R07', name: 'Negative instructions', severity: 'low' },
-  { id: 'R08', name: 'Task decomposition', severity: 'medium' },
-  { id: 'R09', name: 'Context provided', severity: 'low' },
-  { id: 'R10', name: 'Structured delimiters (XML)', severity: 'medium' },
-  { id: 'R11', name: 'ALL CAPS abuse', severity: 'medium' },
-  { id: 'R12', name: 'Structured output format', severity: 'high' },
+  { id: 'min-length', name: 'Minimum length', severity: 'warning' },
+  { id: 'max-length', name: 'Maximum length', severity: 'info' },
+  { id: 'no-output-format', name: 'Output format specified', severity: 'warning' },
+  { id: 'no-examples', name: 'Examples provided', severity: 'warning' },
+  { id: 'no-role', name: 'Role or persona assigned', severity: 'info' },
+  { id: 'no-context', name: 'Background context provided', severity: 'info' },
+  { id: 'ambiguous-negation', name: 'Ambiguous negative instructions', severity: 'info' },
+  { id: 'no-constraints', name: 'Constraints defined', severity: 'info' },
+  { id: 'all-caps-abuse', name: 'All-caps abuse', severity: 'info' },
+  { id: 'vague-instruction', name: 'Vague instructions', severity: 'warning' },
+  { id: 'missing-task', name: 'Clear task or instruction', severity: 'error' },
+  { id: 'no-structured-format', name: 'Structured formatting', severity: 'warning' },
 ];
 
 export default function Home() {
@@ -53,8 +53,9 @@ export default function Home() {
           before you <em>send</em> them
         </h1>
         <p className="hero-sub">
-          Static analysis for LLM prompts. Get a score, catch ambiguity, surface missing structure
-          &mdash; with model-specific best practices. No API calls required.
+          Static analysis for LLM prompts. Score a prompt, catch ambiguity, and surface missing
+          structure with deterministic rules and model-specific guidance. CLI and library available
+          today.
         </p>
         <div className="hero-actions">
           <a
@@ -87,10 +88,10 @@ export default function Home() {
         <h2 className="section-title">Three steps. Zero API calls.</h2>
         <div className="steps">
           <div className="step">
-            <h3>Write your prompt</h3>
+            <h3>Choose your surface</h3>
             <p>
-              Paste it into the Web UI, pass a file to the CLI, or import{' '}
-              <code>@promptscore/core</code> in your code.
+              Run the CLI on a prompt file today, import <code>@promptscore/core</code> in your
+              code, or use the browser preview on this page to understand the workflow.
             </p>
           </div>
           <div className="step">
@@ -103,8 +104,8 @@ export default function Home() {
           <div className="step">
             <h3>Get actionable feedback</h3>
             <p>
-              Each issue links to model-specific best practices from Claude, GPT, and Gemini
-              documentation.
+              Each finding includes a concrete fix suggestion, and supported profiles can attach
+              Claude- or GPT-specific references.
             </p>
           </div>
         </div>
@@ -146,12 +147,15 @@ export default function Home() {
           <div className="feature-card">
             <div className="feature-icon blue">&#x2192;</div>
             <h3>CI/CD Ready</h3>
-            <p>Drop into your pipeline. Fail builds on prompts that score below your threshold.</p>
+            <p>Use the CLI in CI today. It exits non-zero when error-level findings are present.</p>
           </div>
           <div className="feature-card">
             <div className="feature-icon yellow">&#x26A0;</div>
             <h3>Actionable Warnings</h3>
-            <p>Every issue includes a fix suggestion with links to official model documentation.</p>
+            <p>
+              Each failing rule includes a concrete fix suggestion, and supported profiles can link
+              to official model docs.
+            </p>
           </div>
           <div className="feature-card">
             <div className="feature-icon red">&#x2205;</div>

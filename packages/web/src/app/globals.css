@@ -305,6 +305,14 @@ nav {
   animation: fadeUp 0.6s ease 0.5s both;
 }
 
+.demo-disclaimer {
+  max-width: 760px;
+  margin: -1.8rem 0 1.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
 .demo-window {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -391,7 +399,24 @@ nav {
   letter-spacing: 0.08em;
   color: var(--text-muted);
   font-weight: 600;
+}
+
+.demo-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.demo-profile-chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  background: var(--bg-deep);
 }
 
 .demo-textarea {
@@ -410,6 +435,13 @@ nav {
 .demo-textarea:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.demo-pane-note {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
 }
 
 .demo-input-footer {
@@ -816,7 +848,17 @@ nav {
   color: var(--red);
 }
 
+.rule-sev.error {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--red);
+}
+
 .rule-sev.medium {
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--yellow);
+}
+
+.rule-sev.warning {
   background: rgba(251, 191, 36, 0.12);
   color: var(--yellow);
 }
@@ -824,6 +866,11 @@ nav {
 .rule-sev.low {
   background: rgba(52, 211, 153, 0.12);
   color: var(--green);
+}
+
+.rule-sev.info {
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--blue);
 }
 
 /* ── Install ─────────────────────────────────────────────── */
