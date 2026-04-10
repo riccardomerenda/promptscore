@@ -66,7 +66,7 @@ const CONTEXT_KEYWORDS: RegExp[] = [
 
 const XML_TAG_REGEX = /<([a-z][a-z0-9_-]*)\b[^>]*>[\s\S]*?<\/\1>/i;
 const MARKDOWN_HEADER_REGEX = /^#{1,6}\s+\S/m;
-const NUMBERED_SECTION_REGEX = /^\s*(?:\d+[.)]\s+|\-\s+|\*\s+)/m;
+const NUMBERED_SECTION_REGEX = /^\s*(?:\d+[.)]\s+|-\s+|\*\s+)/m;
 
 function countWords(text: string): number {
   const trimmed = text.trim();
