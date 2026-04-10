@@ -56,7 +56,7 @@ export default function Home() {
         </div>
         <div className="cli-cmd">
           <span className="cli-prompt">$</span>
-          npx promptscore analyze prompt.txt
+          npx @promptscore/cli analyze prompt.txt
         </div>
       </section>
 

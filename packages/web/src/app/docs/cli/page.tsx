@@ -10,6 +10,10 @@ export default function CliPage() {
     >
       <section className="docs-section">
         <h2>Core commands</h2>
+        <p>
+          Install the package as `@promptscore/cli`, then run the `promptscore` binary in your
+          shell.
+        </p>
         <pre className="docs-code-block">
           <code>{`promptscore analyze prompt.txt
 promptscore analyze --inline "You are a helpful assistant."

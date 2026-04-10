@@ -1,5 +1,5 @@
 {
-  "name": "promptscore",
+  "name": "@promptscore/cli",
   "version": "0.1.1",
   "description": "CLI for PromptScore — static analysis for LLM prompts.",
   "license": "MIT",
