@@ -1,3 +1,4 @@
+import type { PromptAST } from '../parser/types.js';
 import type { Profile } from '../profiles/types.js';
 import type { Rule, RuleCategory, RuleResult } from '../rules/types.js';
 
@@ -28,7 +29,7 @@ export interface ScoreReport {
 export interface RunRulesOptions {
   rules: Rule[];
   profile: Profile;
-  ast: import('../parser/types.js').PromptAST;
+  ast: PromptAST;
   only?: string[];
   includeLlm?: boolean;
 }
