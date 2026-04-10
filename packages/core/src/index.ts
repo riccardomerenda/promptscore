@@ -18,6 +18,15 @@ export type {
   RuleType,
 } from './rules/types.js';
 
+export { loadPromptScoreConfig } from './config/loader.js';
+export type { PromptScoreConfigLoaderOptions } from './config/loader.js';
+export type {
+  ConfigReportFormat,
+  FailOnSeverity,
+  LoadedPromptScoreConfig,
+  PromptScoreConfig,
+} from './config/types.js';
+
 export { ProfileLoader } from './profiles/loader.js';
 export type { ProfileLoaderOptions } from './profiles/loader.js';
 export type { Profile, ProfileRuleOverride } from './profiles/types.js';

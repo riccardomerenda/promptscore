@@ -48,6 +48,12 @@ promptscore analyze prompt.txt --format json
 # only run a subset of rules
 promptscore analyze prompt.txt --rules no-examples,no-output-format
 
+# use an explicit project config
+promptscore analyze prompt.txt --config ./configs/team.yaml
+
+# fail CI on warnings, not just errors
+promptscore analyze prompt.txt --fail-on warning
+
 # list all rules and profiles
 promptscore rules
 promptscore profiles
@@ -90,6 +96,25 @@ const report = await analyze(
 console.log(format(report, 'text'));
 console.log('Overall:', report.overall);
 ```
+
+## Project config
+
+PromptScore can auto-discover a project config file from the current directory or the analyzed
+file path. Supported names include `promptscore.config.yaml`, `promptscore.config.json`, and
+`.promptscorerc`.
+
+```yaml
+model: claude
+format: markdown
+rules:
+  - missing-task
+  - no-output-format
+fail_on_severity: warning
+profiles_dir: ./profiles
+```
+
+CLI flags override config values, so a project can default to `claude` while a one-off run still
+uses `--model gpt`.
 
 ## Rules (v0.1)
 
