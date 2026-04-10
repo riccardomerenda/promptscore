@@ -42,7 +42,7 @@ Conventional commits: `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`.
 ## Changesets
 
 - Add a changeset for user-visible changes by running `npm run changeset`.
-- Keep `@promptscore/core`, `promptscore`, and `@promptscore/web` on the same release line.
+- Keep `@promptscore/core`, `@promptscore/cli`, and `@promptscore/web` on the same release line.
 - Do not hand-edit the generated version files for the site or CLI.
 
 ## Code style

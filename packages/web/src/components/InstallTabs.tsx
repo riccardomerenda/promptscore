@@ -10,17 +10,17 @@ interface CodeLine {
 const INSTALL_CODES: Record<string, CodeLine[]> = {
   npx: [
     { type: 'comment', text: '# Analyze a prompt file — no install needed' },
-    { type: 'code', text: 'npx promptscore analyze prompt.txt' },
+    { type: 'code', text: 'npx @promptscore/cli analyze prompt.txt' },
     { type: 'blank' },
     { type: 'comment', text: '# Or pipe from stdin' },
-    { type: 'code', text: 'echo "You are a helpful assistant" | npx promptscore analyze' },
+    { type: 'code', text: 'echo "You are a helpful assistant" | npx @promptscore/cli analyze' },
     { type: 'blank' },
     { type: 'comment', text: '# Target a specific model profile' },
-    { type: 'code', text: 'npx promptscore analyze prompt.txt --model claude' },
+    { type: 'code', text: 'npx @promptscore/cli analyze prompt.txt --model claude' },
   ],
   npm: [
     { type: 'comment', text: '# Install globally' },
-    { type: 'code', text: 'npm install -g promptscore' },
+    { type: 'code', text: 'npm install -g @promptscore/cli' },
     { type: 'blank' },
     { type: 'comment', text: '# Then use anywhere' },
     { type: 'code', text: 'promptscore analyze my-prompt.txt' },

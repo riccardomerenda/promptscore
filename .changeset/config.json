@@ -1,7 +1,7 @@
 {
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [["@promptscore/core", "promptscore", "@promptscore/web"]],
+  "fixed": [["@promptscore/core", "@promptscore/cli", "@promptscore/web"]],
   "linked": [],
   "access": "public",
   "baseBranch": "main",

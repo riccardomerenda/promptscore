@@ -15,7 +15,7 @@ export default function GettingStartedPage() {
           `npx`.
         </p>
         <pre className="docs-code-block">
-          <code>{`npm install -g promptscore\nnpx promptscore analyze prompt.txt`}</code>
+          <code>{`npm install -g @promptscore/cli\nnpx @promptscore/cli analyze prompt.txt`}</code>
         </pre>
       </section>
 

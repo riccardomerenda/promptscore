@@ -24,10 +24,10 @@ PromptScore is in early development (**v0.1 — MVP**). The deterministic rules,
 
 ```bash
 # global
-npm install -g promptscore
+npm install -g @promptscore/cli
 
 # or run once
-npx promptscore analyze prompt.txt
+npx @promptscore/cli analyze prompt.txt
 ```
 
 ## Usage
@@ -124,7 +124,7 @@ Profiles are YAML files under `profiles/` that configure which rules apply and w
 promptscore/
 ├── packages/
 │   ├── core/       # @promptscore/core — library
-│   ├── cli/        # promptscore — CLI
+│   ├── cli/        # @promptscore/cli — CLI
 │   └── web/        # promptscore.dev — landing page
 ├── profiles/       # YAML profiles
 ├── examples/       # good and bad prompt examples

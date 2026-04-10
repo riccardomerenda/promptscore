@@ -11,7 +11,7 @@ raw prompt  →  parser  →  PromptAST  →  rules engine  →  RuleResult[]  �
 ## Packages
 
 - **`@promptscore/core`** — the library. Pure TypeScript, runs in Node and browser. Exposes `analyze`, `parsePrompt`, the rule registry, the profile loader, the scorer, and reporters.
-- **`promptscore` (CLI)** — a thin `commander`-based wrapper around the core library.
+- **`@promptscore/cli`** — the published CLI package. It installs the `promptscore` terminal command as a thin `commander`-based wrapper around the core library.
 - **`@promptscore/web`** — the landing page for [promptscore.dev](https://promptscore.dev). Static Next.js site with a browser analyzer powered by the deterministic core engine.
 
 ## Parser
