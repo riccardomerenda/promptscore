@@ -14,7 +14,7 @@ const program = new Command();
 program
   .name('promptscore')
   .description('Static analysis for LLM prompts — ESLint, but for prompts.')
-  .version('0.1.0');
+  .version('0.1.1');
 
 program
   .command('analyze')

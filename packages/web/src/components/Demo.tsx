@@ -307,7 +307,7 @@ export function Demo() {
               CLI view
             </button>
           </div>
-          <span className="demo-version">v0.1.0</span>
+          <span className="demo-version">v0.1.1</span>
         </div>
         {tab === 'browser' ? (
           <AnalyzerView
