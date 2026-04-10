@@ -12,7 +12,11 @@ const RULES = [
   ['all-caps-abuse', 'clarity', 'ALL CAPS is not overused for emphasis.'],
   ['vague-instruction', 'clarity', 'Qualifiers like good or appropriate are not left undefined.'],
   ['missing-task', 'clarity', 'An explicit task or request is detectable.'],
-  ['no-structured-format', 'structure', 'Long prompts use visible structure such as sections or tags.'],
+  [
+    'no-structured-format',
+    'structure',
+    'Long prompts use visible structure such as sections or tags.',
+  ],
 ];
 
 export default function RulesPage() {
@@ -54,7 +58,9 @@ export default function RulesPage() {
         <ul className="docs-list">
           <li>The score is a structural signal, not a guarantee of output quality.</li>
           <li>Rule weight and severity come from the active profile.</li>
-          <li>`missing-task` is intentionally the most important rule in the default experience.</li>
+          <li>
+            `missing-task` is intentionally the most important rule in the default experience.
+          </li>
           <li>Suggestions are sorted by likely impact, not just in file order.</li>
         </ul>
       </section>

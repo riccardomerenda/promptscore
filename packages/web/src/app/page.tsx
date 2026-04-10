@@ -2,6 +2,7 @@ import { Demo } from '../components/Demo';
 import { InstallTabs } from '../components/InstallTabs';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteNav } from '../components/SiteNav';
+import { productVersionLabel } from '../lib/version';
 
 const RULES = [
   { id: 'min-length', name: 'Minimum length', severity: 'warning' },
@@ -26,7 +27,7 @@ export default function Home() {
       <section className="hero">
         <div className="hero-badge">
           <span className="badge-dot" />
-          v0.1.1 &middot; Open Source &middot; MIT
+          {productVersionLabel} &middot; Open Source &middot; MIT
         </div>
         <h1>
           Lint your prompts

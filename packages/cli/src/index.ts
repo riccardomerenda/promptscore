@@ -8,13 +8,14 @@ import {
   ProfileLoader,
   type ReportFormat,
 } from '@promptscore/core';
+import { productVersion } from './version.js';
 
 const program = new Command();
 
 program
   .name('promptscore')
   .description('Static analysis for LLM prompts — ESLint, but for prompts.')
-  .version('0.1.1');
+  .version(productVersion);
 
 program
   .command('analyze')
