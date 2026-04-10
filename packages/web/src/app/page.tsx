@@ -8,8 +8,8 @@ export default function Home() {
         </h1>
         <p className="tagline">Static analysis for LLM prompts. ESLint, but for prompts.</p>
         <p className="sub">
-          Analyze a prompt <em>before</em> you send it. Get a score, find ambiguity, surface
-          missing structure — with references to model-specific best practices.
+          Analyze a prompt <em>before</em> you send it. Get a score, find ambiguity, surface missing
+          structure — with references to model-specific best practices.
         </p>
 
         <div className="cta">
@@ -57,16 +57,14 @@ Findings
         <div className="pillar">
           <h3>Open source</h3>
           <p>
-            MIT-licensed TypeScript monorepo. Zero heavy dependencies. Ships as a library and a
-            CLI.
+            MIT-licensed TypeScript monorepo. Zero heavy dependencies. Ships as a library and a CLI.
           </p>
         </div>
       </section>
 
       <footer className="footer">
         <p>
-          Built by{' '}
-          <a href="https://github.com/riccardomerenda">@riccardomerenda</a>. MIT licensed.
+          Built by <a href="https://github.com/riccardomerenda">@riccardomerenda</a>. MIT licensed.
         </p>
       </footer>
     </main>

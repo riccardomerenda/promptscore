@@ -5,7 +5,8 @@ const LONG_PROMPT_THRESHOLD = 100;
 export const noStructuredFormatRule: Rule = {
   id: 'no-structured-format',
   name: 'Structured formatting',
-  description: 'Long prompts are easier for a model to follow when broken into sections (XML tags, headers, lists).',
+  description:
+    'Long prompts are easier for a model to follow when broken into sections (XML tags, headers, lists).',
   category: 'structure',
   defaultSeverity: 'warning',
   type: 'deterministic',

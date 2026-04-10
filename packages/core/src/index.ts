@@ -6,12 +6,7 @@ import type { Rule } from './rules/types.js';
 import type { Profile } from './profiles/types.js';
 
 export { parsePrompt } from './parser/index.js';
-export type {
-  PromptAST,
-  PromptComponents,
-  PromptMetadata,
-  Example,
-} from './parser/types.js';
+export type { PromptAST, PromptComponents, PromptMetadata, Example } from './parser/types.js';
 
 export { RuleRegistry, createDefaultRegistry } from './rules/registry.js';
 export type {
@@ -27,23 +22,10 @@ export { ProfileLoader } from './profiles/loader.js';
 export type { ProfileLoaderOptions } from './profiles/loader.js';
 export type { Profile, ProfileRuleOverride } from './profiles/types.js';
 
-export {
-  runRules,
-  buildReport,
-} from './scorer/index.js';
-export type {
-  ScoreReport,
-  CategoryScore,
-  Suggestion,
-  RunRulesOptions,
-} from './scorer/index.js';
+export { runRules, buildReport } from './scorer/index.js';
+export type { ScoreReport, CategoryScore, Suggestion, RunRulesOptions } from './scorer/index.js';
 
-export {
-  format,
-  formatText,
-  formatJson,
-  formatMarkdown,
-} from './reporter/index.js';
+export { format, formatText, formatJson, formatMarkdown } from './reporter/index.js';
 export type { ReportFormat, TextReporterOptions } from './reporter/index.js';
 
 export { deterministicRules } from './rules/deterministic/index.js';

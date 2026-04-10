@@ -24,7 +24,8 @@ const VAGUE_PATTERN = buildVaguePattern();
 export const vagueInstructionRule: Rule = {
   id: 'vague-instruction',
   name: 'Vague instructions',
-  description: 'Vague words like "good", "proper", or "appropriate" do not give the model a concrete target.',
+  description:
+    'Vague words like "good", "proper", or "appropriate" do not give the model a concrete target.',
   category: 'clarity',
   defaultSeverity: 'warning',
   type: 'deterministic',
