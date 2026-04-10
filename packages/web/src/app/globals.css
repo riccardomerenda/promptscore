@@ -1182,8 +1182,7 @@ footer a:hover {
   border-radius: 16px;
   border: 1px solid var(--border-subtle);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 55%),
-    var(--bg-surface);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 55%), var(--bg-surface);
 }
 
 .docs-section h2 {

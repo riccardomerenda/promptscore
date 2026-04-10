@@ -33,7 +33,7 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@promptscore/core": "*",
+    "@promptscore/core": "^0.1.1",
     "commander": "^12.1.0"
   },
   "devDependencies": {
@@ -42,6 +42,7 @@
     "typescript": "^5.7.2"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   }
 }

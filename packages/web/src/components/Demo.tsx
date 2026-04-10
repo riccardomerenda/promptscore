@@ -7,6 +7,7 @@ import {
   type BuiltinProfileName,
   type ScoreReport,
 } from '@promptscore/core/browser';
+import { productVersionLabel } from '../lib/version';
 
 const DEFAULT_PROMPT = `You are a helpful assistant.
 
@@ -307,7 +308,7 @@ export function Demo() {
               CLI view
             </button>
           </div>
-          <span className="demo-version">v0.1.1</span>
+          <span className="demo-version">{productVersionLabel}</span>
         </div>
         {tab === 'browser' ? (
           <AnalyzerView

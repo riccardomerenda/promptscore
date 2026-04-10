@@ -34,7 +34,9 @@ promptscore profiles`}</code>
         <ul className="docs-list">
           <li>`0`: analysis completed and no error-level findings were present.</li>
           <li>`1`: analysis completed and at least one failing rule had `error` severity.</li>
-          <li>`2`: PromptScore could not complete the command because of an input or runtime error.</li>
+          <li>
+            `2`: PromptScore could not complete the command because of an input or runtime error.
+          </li>
         </ul>
       </section>
 
