@@ -53,9 +53,8 @@ export default function Home() {
           before you <em>send</em> them
         </h1>
         <p className="hero-sub">
-          Static analysis for LLM prompts. Score a prompt, catch ambiguity, and surface missing
-          structure with deterministic rules and model-specific guidance. CLI and library available
-          today.
+          Static analysis for LLM prompts. Analyze a prompt in the browser, use the CLI in CI, or
+          embed the core library directly in your tooling with the same deterministic engine.
         </p>
         <div className="hero-actions">
           <a
@@ -90,8 +89,8 @@ export default function Home() {
           <div className="step">
             <h3>Choose your surface</h3>
             <p>
-              Run the CLI on a prompt file today, import <code>@promptscore/core</code> in your
-              code, or use the browser preview on this page to understand the workflow.
+              Analyze prompts directly in the browser on this page, run the CLI on a prompt file, or
+              import <code>@promptscore/core</code> in your code.
             </p>
           </div>
           <div className="step">
@@ -138,10 +137,10 @@ export default function Home() {
           </div>
           <div className="feature-card">
             <div className="feature-icon orange">&#x2756;</div>
-            <h3>Library + CLI</h3>
+            <h3>Browser + CLI + Library</h3>
             <p>
-              Use <code>@promptscore/core</code> in your code or run <code>promptscore</code> from
-              the terminal. Zero heavy dependencies.
+              Use the browser analyzer for quick checks, import <code>@promptscore/core</code> in
+              your code, or run <code>promptscore</code> from the terminal.
             </p>
           </div>
           <div className="feature-card">

@@ -16,7 +16,7 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 
 ## Status
 
-PromptScore is in early development (**v0.1 — MVP**). The deterministic rules, library, CLI, profiles, docs, and landing page are ready. A fuller browser analyzer, LLM-backed rules, and more profiles are still on the roadmap.
+PromptScore is in early development (**v0.1 — MVP**). The deterministic rules, library, CLI, profiles, docs, landing page, and browser analyzer are ready. LLM-backed rules, richer browser workflows, and more profiles are still on the roadmap.
 
 ---
 
@@ -150,9 +150,9 @@ node packages/cli/dist/index.js analyze examples/good/classifier.txt --model cla
 
 ## Roadmap
 
-- **v0.1** (now) — parser, 12 deterministic rules, core library, CLI, profiles, docs, landing page.
+- **v0.1** (now) — parser, 12 deterministic rules, core library, CLI, profiles, docs, landing page, browser analyzer.
 - **v0.2** — LLM-backed rules (Anthropic first), Gemini profile, markdown reporter polish.
-- **v0.3** — fuller [promptscore.dev](https://promptscore.dev) browser analyzer.
+- **v0.3** — saved reports, copy/export flows, and richer [promptscore.dev](https://promptscore.dev) browser workflows.
 - **Later** — VS Code extension, hosted API, team features.
 
 ## Contributing

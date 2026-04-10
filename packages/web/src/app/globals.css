@@ -444,6 +444,60 @@ nav {
   color: var(--text-secondary);
 }
 
+.demo-summary-card,
+.demo-success-card,
+.demo-error-card {
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.demo-summary-title,
+.demo-section-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.demo-summary-card p,
+.demo-success-card p,
+.demo-error-card p {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.85rem;
+}
+
+.demo-inline-stats {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.demo-category-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.demo-category-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+}
+
 .demo-input-footer {
   display: flex;
   align-items: center;
@@ -603,6 +657,18 @@ nav {
   animation: fadeUp 0.3s ease both;
 }
 
+.issue-item a {
+  display: inline-flex;
+  margin-top: 0.55rem;
+  font-size: 0.78rem;
+}
+
+.issue-detail {
+  margin-top: 0.55rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
 .issue-tag {
   display: inline-block;
   font-family: var(--font-mono);
@@ -639,6 +705,21 @@ nav {
   max-height: 460px;
   min-height: 420px;
   background: var(--bg-deep);
+}
+
+.terminal-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.terminal-output {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .cursor-blink {

@@ -1,251 +1,288 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
+import {
+  analyzeWithProfile,
+  formatText,
+  type BuiltinProfileName,
+  type ScoreReport,
+} from '@promptscore/core/browser';
 
-const SAMPLE_PROMPT = `You are a helpful assistant.
-Please explain TypeScript concepts.
-Be good and nice.`;
+const DEFAULT_PROMPT = `You are a helpful assistant.
 
-const SAMPLE_RESULTS = [
-  {
-    id: 'min-length',
-    severity: 'warning' as const,
-    label: 'Minimum length',
-    message: 'The prompt is still short, so the model has limited context to work with.',
-  },
-  {
-    id: 'no-output-format',
-    severity: 'warning' as const,
-    label: 'Output format',
-    message: 'No output format is specified, so the answer shape is left to the model.',
-  },
-  {
-    id: 'no-examples',
-    severity: 'warning' as const,
-    label: 'Examples',
-    message: 'There are no examples to anchor the expected behavior or formatting.',
-  },
-  {
-    id: 'vague-instruction',
-    severity: 'warning' as const,
-    label: 'Vague language',
-    message: '"Good" and "nice" do not give the model a measurable target.',
-  },
-  {
-    id: 'no-context',
-    severity: 'info' as const,
-    label: 'Context',
-    message: 'Background context is missing, so the prompt leaves audience and stakes implicit.',
-  },
-  {
-    id: 'no-constraints',
-    severity: 'info' as const,
-    label: 'Constraints',
-    message: 'No explicit boundaries are defined for length, scope, or style.',
-  },
+Your task is to explain TypeScript generics to a junior frontend developer.
+
+Use a friendly tone.
+Keep the answer under 200 words.`;
+
+const PROFILE_OPTIONS: Array<{ id: BuiltinProfileName; label: string }> = [
+  { id: '_base', label: 'baseline' },
+  { id: 'claude', label: 'claude' },
+  { id: 'gpt', label: 'gpt' },
 ];
 
-const OVERALL_SCORE = 43;
-
 function scoreColor(score: number): string {
-  if (score >= 70) return 'var(--green)';
-  if (score >= 40) return 'var(--yellow)';
+  if (score >= 80) return 'var(--green)';
+  if (score >= 50) return 'var(--yellow)';
   return 'var(--red)';
 }
 
-interface TerminalLine {
-  text: string;
-  color?: string;
-  delay: number;
-  big?: boolean;
+function severityLabel(severity: 'error' | 'warning' | 'info'): string {
+  if (severity === 'error') return 'ERR';
+  if (severity === 'warning') return 'WARN';
+  return 'INFO';
 }
 
-function TerminalView() {
-  const [lines, setLines] = useState<TerminalLine[]>([]);
-  const [done, setDone] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const terminalLines: TerminalLine[] = [
-    { text: '$ promptscore analyze prompt.txt --model claude', color: '#e2e8f0', delay: 0 },
-    { text: '', delay: 200 },
-    { text: 'PromptScore - profile: claude', color: '#e2e8f0', delay: 400 },
-    { text: '', delay: 550 },
-    {
-      text: 'Overall  43/100  [#############.................]',
-      color: '#faad14',
-      delay: 800,
-      big: true,
-    },
-    { text: 'Score 43/100 - 4 warnings, 2 info.', color: '#7c8da6', delay: 1000 },
-    { text: '', delay: 1100 },
-    { text: 'Categories', color: '#e2e8f0', delay: 1250 },
-    { text: '  clarity          46/100 (3 rules)', color: '#7c8da6', delay: 1400 },
-    { text: '  structure       100/100 (2 rules)', color: '#7c8da6', delay: 1500 },
-    { text: '  specificity      35/100 (4 rules)', color: '#7c8da6', delay: 1600 },
-    { text: '  best-practice    50/100 (3 rules)', color: '#7c8da6', delay: 1700 },
-    { text: '', delay: 1800 },
-    { text: 'Findings', color: '#e2e8f0', delay: 1950 },
-    {
-      text: '  warn  min-length           Prompt is very short (13 words).',
-      color: '#faad14',
-      delay: 2100,
-    },
-    {
-      text: '        -> Add more detail about what you want and how the output should look.',
-      color: '#546378',
-      delay: 2200,
-    },
-    {
-      text: '  warn  no-output-format     No output format is specified.',
-      color: '#faad14',
-      delay: 2350,
-    },
-    {
-      text: '        -> State the exact format: JSON, bullets, markdown, or a sentence.',
-      color: '#546378',
-      delay: 2450,
-    },
-    {
-      text: '  warn  no-examples          No examples provided.',
-      color: '#faad14',
-      delay: 2600,
-    },
-    {
-      text: '        -> Add 1-3 examples showing the expected input and output.',
-      color: '#546378',
-      delay: 2700,
-    },
-    {
-      text: '  warn  vague-instruction    Vague qualifiers used: good, nice.',
-      color: '#faad14',
-      delay: 2850,
-    },
-    {
-      text: '        -> Replace vague words with measurable criteria.',
-      color: '#546378',
-      delay: 2950,
-    },
-    {
-      text: '  info  no-context           No background context detected.',
-      color: '#60a5fa',
-      delay: 3100,
-    },
-    {
-      text: '  info  no-constraints       No constraints detected.',
-      color: '#60a5fa',
-      delay: 3200,
-    },
-    { text: '', delay: 3300 },
-    { text: '6 rules passed.', color: '#7c8da6', delay: 3450 },
-  ];
-
-  useEffect(() => {
-    const timeouts: ReturnType<typeof setTimeout>[] = [];
-    terminalLines.forEach((line, index) => {
-      const timeout = setTimeout(() => {
-        setLines((prev) => [...prev, line]);
-        if (index === terminalLines.length - 1) setDone(true);
-      }, line.delay);
-      timeouts.push(timeout);
-    });
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
-
-  useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [lines]);
-
-  return (
-    <div ref={containerRef} className="terminal-content">
-      {lines.map((line, index) => (
-        <div
-          key={index}
-          style={{
-            color: line.color ?? '#e2e8f0',
-            minHeight: 20,
-            whiteSpace: 'pre',
-            fontSize: line.big ? 15 : 13,
-            fontWeight: line.big ? 700 : 400,
-          }}
-        >
-          {line.text}
-        </div>
-      ))}
-      {!done && <span className="cursor-blink">|</span>}
-    </div>
-  );
+interface AnalyzerViewProps {
+  prompt: string;
+  profileName: BuiltinProfileName;
+  isAnalyzing: boolean;
+  report: ScoreReport | null;
+  error: string | null;
+  isDirty: boolean;
+  onPromptChange: (value: string) => void;
+  onProfileChange: (value: BuiltinProfileName) => void;
+  onAnalyze: () => void;
 }
 
-function BrowserPreview() {
+function AnalyzerView(props: AnalyzerViewProps) {
+  const {
+    prompt,
+    profileName,
+    isAnalyzing,
+    report,
+    error,
+    isDirty,
+    onPromptChange,
+    onProfileChange,
+    onAnalyze,
+  } = props;
+
+  const overallScore = Math.round(report?.overall ?? 0);
   const circumference = 2 * Math.PI * 44;
-  const offset = circumference - (OVERALL_SCORE / 100) * circumference;
+  const offset = circumference - (overallScore / 100) * circumference;
+  const failedResults = report?.results.filter((result) => !result.passed) ?? [];
+  const passedCount = report?.results.filter((result) => result.passed).length ?? 0;
 
   return (
     <div className="demo-body">
       <div className="demo-input-pane">
         <div className="demo-pane-header">
-          <label>Sample prompt</label>
-          <span className="demo-profile-chip">Claude profile</span>
+          <label>Your prompt</label>
+          <span className="demo-profile-chip">Runs locally in the browser</span>
         </div>
         <textarea
-          aria-label="Sample prompt preview"
+          aria-label="Prompt analyzer input"
           className="demo-textarea"
-          value={SAMPLE_PROMPT}
-          readOnly
+          value={prompt}
+          onChange={(event) => onPromptChange(event.target.value)}
         />
+        <div className="demo-input-footer">
+          <div className="demo-model-select">
+            {PROFILE_OPTIONS.map((option) => (
+              <button
+                key={option.id}
+                className={`model-chip ${profileName === option.id ? 'active' : ''}`}
+                onClick={() => onProfileChange(option.id)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={onAnalyze}
+            disabled={isAnalyzing || !prompt.trim()}
+            className={`analyze-chip ${isAnalyzing ? 'loading' : ''}`}
+          >
+            {isAnalyzing ? 'Analyzing…' : isDirty ? 'Re-analyze' : 'Analyze'}
+          </button>
+        </div>
         <p className="demo-pane-note">
-          Landing-page preview only. Run the CLI or <code>@promptscore/core</code> for real analysis
-          today.
+          This analyzer uses the current deterministic engine from <code>@promptscore/core</code>.
+          No API calls are made.
         </p>
       </div>
       <div className="demo-output-pane">
-        <div className="score-ring-wrapper">
-          <div className="score-ring">
-            <svg viewBox="0 0 100 100">
-              <circle className="score-ring-bg" cx="50" cy="50" r="44" />
-              <circle
-                className="score-ring-fill"
-                cx="50"
-                cy="50"
-                r="44"
-                style={{
-                  stroke: scoreColor(OVERALL_SCORE),
-                  strokeDasharray: circumference,
-                  strokeDashoffset: offset,
-                }}
-              />
-            </svg>
-            <div className="score-num" style={{ color: scoreColor(OVERALL_SCORE) }}>
-              {OVERALL_SCORE}
+        {error ? (
+          <div className="demo-error-card">
+            <strong>Analysis failed</strong>
+            <p>{error}</p>
+          </div>
+        ) : report ? (
+          <>
+            <div className="score-ring-wrapper">
+              <div className="score-ring">
+                <svg viewBox="0 0 100 100">
+                  <circle className="score-ring-bg" cx="50" cy="50" r="44" />
+                  <circle
+                    className="score-ring-fill"
+                    cx="50"
+                    cy="50"
+                    r="44"
+                    style={{
+                      stroke: scoreColor(overallScore),
+                      strokeDasharray: circumference,
+                      strokeDashoffset: offset,
+                    }}
+                  />
+                </svg>
+                <div className="score-num" style={{ color: scoreColor(overallScore) }}>
+                  {overallScore}
+                </div>
+              </div>
+              <div className="score-label">{report.profileName} profile</div>
             </div>
+
+            <div className="demo-summary-card">
+              <div className="demo-summary-title">Summary</div>
+              <p>{report.summary}</p>
+              <div className="demo-inline-stats">
+                <span>{failedResults.length} findings</span>
+                <span>{passedCount} passed</span>
+              </div>
+            </div>
+
+            <div className="demo-section-label">Category scores</div>
+            <div className="demo-category-list">
+              {report.categories.map((category) => (
+                <div key={category.category} className="demo-category-row">
+                  <span>{category.category}</span>
+                  <strong style={{ color: scoreColor(Math.round(category.score)) }}>
+                    {Math.round(category.score)}/100
+                  </strong>
+                </div>
+              ))}
+            </div>
+
+            <div className="demo-section-label">Findings</div>
+            {failedResults.length > 0 ? (
+              failedResults.map((result) => (
+                <div key={result.ruleId} className="issue-item">
+                  <span className={`issue-tag ${result.severity}`}>
+                    {severityLabel(result.severity)}
+                  </span>
+                  <strong>{result.ruleId}</strong> - {result.message}
+                  {result.suggestion ? <p className="issue-detail">{result.suggestion}</p> : null}
+                  {result.reference ? (
+                    <a href={result.reference} target="_blank" rel="noopener noreferrer">
+                      Reference
+                    </a>
+                  ) : null}
+                </div>
+              ))
+            ) : (
+              <div className="demo-success-card">
+                <strong>No failing rules</strong>
+                <p>This prompt passes every deterministic check in the selected profile.</p>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="demo-placeholder">
+            <div className="placeholder-icon">PS</div>
+            <p>Run the analyzer to see a real prompt report here.</p>
           </div>
-          <div className="score-label">SAMPLE REPORT</div>
-        </div>
-        <span className="output-label">Sample findings</span>
-        {SAMPLE_RESULTS.map((result) => (
-          <div key={result.id} className="issue-item">
-            <span className={`issue-tag ${result.severity}`}>
-              {result.severity === 'warning' ? 'WARN' : 'INFO'}
-            </span>
-            <strong>{result.label}</strong> - {result.message}
-          </div>
-        ))}
+        )}
       </div>
     </div>
   );
 }
 
+function TerminalView(props: {
+  report: ScoreReport | null;
+  error: string | null;
+  isAnalyzing: boolean;
+  profileName: BuiltinProfileName;
+}) {
+  const { report, error, isAnalyzing, profileName } = props;
+
+  if (error) {
+    return <div className="terminal-content">error: {error}</div>;
+  }
+
+  if (!report) {
+    return <div className="terminal-content">Run the browser analyzer to generate a report.</div>;
+  }
+
+  const output = formatText(report, { color: false });
+
+  return (
+    <div className="terminal-content">
+      <div className="terminal-meta">
+        <span>
+          $ promptscore analyze prompt.txt --model {profileName === '_base' ? '_base' : profileName}
+        </span>
+        <span>{isAnalyzing ? 'refreshing…' : 'deterministic output'}</span>
+      </div>
+      <pre className="terminal-output">{output}</pre>
+    </div>
+  );
+}
+
 export function Demo() {
-  const [tab, setTab] = useState<'preview' | 'terminal'>('preview');
+  const latestRunId = useRef(0);
+  const [tab, setTab] = useState<'browser' | 'terminal'>('browser');
+  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
+  const [profileName, setProfileName] = useState<BuiltinProfileName>('claude');
+  const [report, setReport] = useState<ScoreReport | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  async function runAnalysis(nextPrompt = prompt, nextProfileName = profileName): Promise<void> {
+    const runId = latestRunId.current + 1;
+    latestRunId.current = runId;
+    setIsAnalyzing(true);
+    setError(null);
+
+    try {
+      const nextReport = await analyzeWithProfile(nextPrompt, {
+        profileName: nextProfileName,
+      });
+
+      if (latestRunId.current !== runId) return;
+
+      startTransition(() => {
+        setReport(nextReport);
+        setError(null);
+        setIsDirty(false);
+      });
+    } catch (err) {
+      if (latestRunId.current !== runId) return;
+
+      const message = err instanceof Error ? err.message : String(err);
+      startTransition(() => {
+        setError(message);
+      });
+    } finally {
+      if (latestRunId.current === runId) {
+        setIsAnalyzing(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    void runAnalysis(DEFAULT_PROMPT, 'claude');
+  }, []);
+
+  function handlePromptChange(value: string): void {
+    setPrompt(value);
+    setIsDirty(true);
+  }
+
+  function handleProfileChange(value: BuiltinProfileName): void {
+    setProfileName(value);
+    void runAnalysis(prompt, value);
+  }
 
   return (
     <section className="demo-section">
-      <div className="section-label">Guided preview</div>
+      <div className="section-label">Live analyzer</div>
       <p className="demo-disclaimer">
-        The browser pane below is a sample walkthrough, not the full browser analyzer. The shipped
-        product today is the CLI and the core library.
+        The browser analyzer below uses the current deterministic engine directly in the client, so
+        the score and findings stay aligned with the CLI and the core library.
       </p>
       <div className="demo-window">
         <div className="demo-titlebar">
@@ -256,21 +293,42 @@ export function Demo() {
           </div>
           <div className="demo-tabs">
             <button
-              className={`demo-tab ${tab === 'preview' ? 'active' : ''}`}
-              onClick={() => setTab('preview')}
+              className={`demo-tab ${tab === 'browser' ? 'active' : ''}`}
+              onClick={() => setTab('browser')}
+              type="button"
             >
-              Browser preview
+              Browser analyzer
             </button>
             <button
               className={`demo-tab ${tab === 'terminal' ? 'active' : ''}`}
               onClick={() => setTab('terminal')}
+              type="button"
             >
-              CLI sample
+              CLI view
             </button>
           </div>
           <span className="demo-version">v0.1.0</span>
         </div>
-        {tab === 'preview' ? <BrowserPreview /> : <TerminalView key="terminal" />}
+        {tab === 'browser' ? (
+          <AnalyzerView
+            prompt={prompt}
+            profileName={profileName}
+            isAnalyzing={isAnalyzing}
+            report={report}
+            error={error}
+            isDirty={isDirty}
+            onPromptChange={handlePromptChange}
+            onProfileChange={handleProfileChange}
+            onAnalyze={() => void runAnalysis()}
+          />
+        ) : (
+          <TerminalView
+            report={report}
+            error={error}
+            isAnalyzing={isAnalyzing}
+            profileName={profileName}
+          />
+        )}
       </div>
     </section>
   );
