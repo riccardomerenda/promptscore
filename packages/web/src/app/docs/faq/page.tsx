@@ -9,7 +9,7 @@ const FAQS = [
   {
     question: 'Does PromptScore send prompts to external APIs?',
     answer:
-      'Not in the deterministic v0.1 workflow. The CLI, core library, and browser analyzer all run the current rule set locally.',
+      'Not in the current deterministic workflow. The CLI, core library, and browser analyzer all run the shipped rule set locally unless you explicitly opt into future LLM-backed rules.',
   },
   {
     question: 'Why have model profiles if the rules are deterministic?',
@@ -19,7 +19,7 @@ const FAQS = [
   {
     question: 'Can I use PromptScore in CI?',
     answer:
-      'Yes. The CLI exits with code 1 when error-level findings are present, which makes it suitable for CI checks and repository policies.',
+      'Yes. The CLI exits with code 1 when findings meet the active failure threshold, which defaults to errors and can be tightened to warnings or info through config or --fail-on.',
   },
   {
     question: 'Can I add my own rules?',
@@ -29,7 +29,7 @@ const FAQS = [
   {
     question: 'Is there a paid product today?',
     answer:
-      'No hosted paid product ships with v0.1. The current public product is the open-source local analysis experience.',
+      'No hosted paid product ships today. The current public product is the open-source local analysis experience.',
   },
   {
     question: 'Will browser and CLI results match?',

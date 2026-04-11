@@ -1,3 +1,4 @@
+import type { BatchReport, SeverityCounts } from '../batch/index.js';
 import type { ScoreReport } from '../scorer/index.js';
 import type { RuleResult } from '../rules/types.js';
 
@@ -90,6 +91,59 @@ export function formatText(report: ScoreReport, options: TextReporterOptions = {
   return out.join('\n');
 }
 
+export function formatBatchText(report: BatchReport, options: TextReporterOptions = {}): string {
+  const color = options.color ?? true;
+  const out: string[] = [];
+  const averageRounded = Math.round(report.summary.averageScore);
+  const bar = buildBar(averageRounded, 30);
+
+  out.push(c('bold', 'PromptScore — batch report', color));
+  out.push('');
+  out.push(
+    `${c('bold', 'Average', color)}  ${c(scoreColor(averageRounded), `${averageRounded}/100`, color)}  ${bar}`,
+  );
+  out.push(c('dim', buildBatchSummaryText(report), color));
+  out.push('');
+
+  out.push(c('bold', 'Files', color));
+  for (const file of report.files) {
+    const score = Math.round(file.report.overall);
+    out.push(
+      `  ${file.path}  ${c(scoreColor(score), `${String(score).padStart(3)}/100`, color)}  ${c('dim', formatCountsInline(file.findings), color)}`,
+    );
+  }
+  out.push('');
+
+  if (report.worstFiles.length > 0) {
+    out.push(c('bold', 'Worst Files', color));
+    for (const file of report.worstFiles) {
+      const score = Math.round(file.overall);
+      out.push(
+        `  ${file.path}  ${c(scoreColor(score), `${String(score).padStart(3)}/100`, color)}  ${c('dim', formatCountsInline(file.findings), color)}`,
+      );
+    }
+    out.push('');
+  }
+
+  const failingFiles = report.files.filter((file) => file.hasFailures);
+  if (failingFiles.length > 0) {
+    out.push(c('bold', 'Findings By File', color));
+    for (const file of failingFiles) {
+      out.push(`  ${c('bold', file.path, color)}`);
+      for (const result of file.report.results.filter((entry) => !entry.passed)) {
+        const label = c(severityColor(result.severity), severityLabel(result.severity), color);
+        out.push(`    ${label}  ${c('bold', result.ruleId, color)}  ${result.message}`);
+        if (result.suggestion) {
+          out.push(c('dim', `           → ${result.suggestion}`, color));
+        }
+      }
+    }
+    out.push('');
+  }
+
+  return out.join('\n').trimEnd();
+}
+
 function buildBar(score: number, width: number): string {
   const filled = Math.round((score / 100) * width);
   const empty = width - filled;
@@ -141,12 +195,103 @@ export function formatMarkdown(report: ScoreReport): string {
   return out.join('\n');
 }
 
+export function formatBatchMarkdown(report: BatchReport): string {
+  const out: string[] = [];
+  out.push('# PromptScore — batch report');
+  out.push('');
+  out.push(`**Average score:** ${Math.round(report.summary.averageScore)}/100`);
+  out.push('');
+  out.push(`> ${buildBatchSummaryText(report)}`);
+  out.push('');
+  out.push('## Files');
+  out.push('');
+  out.push('| File | Score | Findings | Profile |');
+  out.push('| --- | --- | --- | --- |');
+  for (const file of report.files) {
+    out.push(
+      `| ${file.path} | ${Math.round(file.report.overall)}/100 | ${formatCountsInline(file.findings)} | ${file.report.profileName} |`,
+    );
+  }
+  out.push('');
+
+  if (report.worstFiles.length > 0) {
+    out.push('## Worst files');
+    out.push('');
+    out.push('| File | Score | Findings |');
+    out.push('| --- | --- | --- |');
+    for (const file of report.worstFiles) {
+      out.push(
+        `| ${file.path} | ${Math.round(file.overall)}/100 | ${formatCountsInline(file.findings)} |`,
+      );
+    }
+    out.push('');
+  }
+
+  const failingFiles = report.files.filter((file) => file.hasFailures);
+  if (failingFiles.length > 0) {
+    out.push('## Findings by file');
+    out.push('');
+    for (const file of failingFiles) {
+      out.push(`### \`${file.path}\``);
+      out.push('');
+      for (const result of file.report.results.filter((entry) => !entry.passed)) {
+        out.push(`- \`${result.ruleId}\` (${result.severity}): ${result.message}`);
+        if (result.suggestion) {
+          out.push(`  Suggestion: ${result.suggestion}`);
+        }
+      }
+      out.push('');
+    }
+  }
+
+  return out.join('\n');
+}
+
 export function format(
-  report: ScoreReport,
+  report: ScoreReport | BatchReport,
   fmt: ReportFormat,
   options: TextReporterOptions = {},
 ): string {
+  if (isBatchReport(report)) {
+    if (fmt === 'json') return JSON.stringify(report, null, 2);
+    if (fmt === 'markdown') return formatBatchMarkdown(report);
+    return formatBatchText(report, options);
+  }
   if (fmt === 'json') return formatJson(report);
   if (fmt === 'markdown') return formatMarkdown(report);
   return formatText(report, options);
+}
+
+function isBatchReport(report: ScoreReport | BatchReport): report is BatchReport {
+  return 'kind' in report && report.kind === 'batch';
+}
+
+function buildBatchSummaryText(report: BatchReport): string {
+  const parts = [
+    `${report.summary.files} file${report.summary.files === 1 ? '' : 's'}`,
+    `${report.summary.failedFiles} failing`,
+    `${report.summary.passedFiles} passing`,
+  ];
+  const counts = formatCountsInline(report.summary.findings);
+  const profiles =
+    report.summary.profiles.length === 1
+      ? `profile: ${report.summary.profiles[0]}`
+      : `profiles: ${report.summary.profiles.join(', ')}`;
+  return `${parts.join(' — ')}. Findings: ${counts}. ${profiles}.`;
+}
+
+function formatCountsInline(counts: SeverityCounts): string {
+  if (counts.total === 0) return '0 findings';
+
+  const parts: string[] = [];
+  if (counts.error) {
+    parts.push(`${counts.error} error${counts.error === 1 ? '' : 's'}`);
+  }
+  if (counts.warning) {
+    parts.push(`${counts.warning} warning${counts.warning === 1 ? '' : 's'}`);
+  }
+  if (counts.info) {
+    parts.push(`${counts.info} info`);
+  }
+  return parts.join(', ');
 }

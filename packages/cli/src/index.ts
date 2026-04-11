@@ -1,9 +1,7 @@
 import { Command } from 'commander';
-import { readFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
 import {
   analyze,
+  buildBatchReport,
   createDefaultRegistry,
   format,
   loadPromptScoreConfig,
@@ -11,6 +9,12 @@ import {
   type FailOnSeverity,
   type ReportFormat,
 } from '@promptscore/core';
+import {
+  getExitCode,
+  readPromptFile,
+  resolveAnalyzeSource,
+  resolveConfigSearchDir,
+} from './analyze.js';
 import { productVersion } from './version.js';
 
 const program = new Command();
@@ -23,7 +27,7 @@ program
 program
   .command('analyze')
   .description('Analyze a prompt and print a report')
-  .argument('[file]', 'path to a prompt file')
+  .argument('[inputs...]', 'file, directory, or glob to analyze')
   .option('-c, --config <path>', 'path to a PromptScore config file')
   .option('-i, --inline <prompt>', 'analyze an inline prompt string')
   .option('-m, --model <model>', 'model profile name (e.g. claude, gpt)', '_base')
@@ -32,15 +36,17 @@ program
   .option('--fail-on <severity>', 'exit non-zero on error, warning, info, or none', 'error')
   .option('--llm', 'include LLM-powered rules (requires API key)', false)
   .option('--no-color', 'disable colored output')
-  .action(async (file: string | undefined, opts, command: Command) => {
+  .action(async (inputs: string[] | undefined, opts, command: Command) => {
     try {
       const loadedConfig = await loadPromptScoreConfig({
-        cwd: opts.config ? process.cwd() : resolveConfigSearchDir(file),
+        cwd: opts.config ? process.cwd() : resolveConfigSearchDir(inputs),
         configPath: opts.config,
       });
-      const prompt = await resolvePromptInput(file, opts.inline);
-      if (!prompt) {
-        process.stderr.write('No prompt provided. Pass a file path or use --inline.\n');
+      const source = await resolveAnalyzeSource(inputs, opts.inline);
+      if (!source) {
+        process.stderr.write(
+          'No prompt provided. Pass a file, directory, glob, or use --inline.\n',
+        );
         process.exit(1);
       }
 
@@ -73,14 +79,19 @@ program
         ? parseRulesOption(opts.rules)
         : loadedConfig.config.rules;
 
-      const report = await analyze(prompt, {
+      const analyzeOptions = {
         model,
         only,
         includeLlm,
         profileOptions: loadedConfig.config.profilesDir
           ? { profilesDir: loadedConfig.config.profilesDir }
           : undefined,
-      });
+      };
+
+      const report =
+        source.kind === 'files' && source.files.length > 1
+          ? buildBatchReport(await analyzeFiles(source.files, analyzeOptions))
+          : await analyzeSingleSource(source, analyzeOptions);
 
       const output = format(report, normalizeFormat(fmt), { color });
       process.stdout.write(output + '\n');
@@ -133,36 +144,6 @@ program
     }
   });
 
-async function resolvePromptInput(
-  file: string | undefined,
-  inline: string | undefined,
-): Promise<string | undefined> {
-  if (inline) return inline;
-  if (file) {
-    if (!existsSync(file)) {
-      throw new Error(`File not found: ${file}`);
-    }
-    return readFile(file, 'utf8');
-  }
-  // Try reading from stdin if piped
-  if (!process.stdin.isTTY) {
-    return readStdin();
-  }
-  return undefined;
-}
-
-async function readStdin(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    process.stdin.setEncoding('utf8');
-    process.stdin.on('data', (chunk) => {
-      data += chunk;
-    });
-    process.stdin.on('end', () => resolve(data));
-    process.stdin.on('error', reject);
-  });
-}
-
 function normalizeFormat(input: string): ReportFormat {
   if (input === 'json' || input === 'markdown' || input === 'text') return input;
   return 'text';
@@ -200,34 +181,6 @@ function parseFailOnSeverity(value: string): FailOnSeverity {
   throw new Error(`Invalid value for --fail-on: ${value}`);
 }
 
-function getExitCode(
-  report: Awaited<ReturnType<typeof analyze>>,
-  failOnSeverity: FailOnSeverity,
-): number {
-  if (failOnSeverity === 'none') {
-    return 0;
-  }
-
-  const rank: Record<Exclude<FailOnSeverity, 'none'>, number> = {
-    info: 1,
-    warning: 2,
-    error: 3,
-  };
-  const threshold = rank[failOnSeverity];
-
-  const shouldFail = report.results.some((result) => {
-    if (result.passed) return false;
-    return rank[result.severity] >= threshold;
-  });
-
-  return shouldFail ? 1 : 0;
-}
-
-function resolveConfigSearchDir(file: string | undefined): string {
-  if (!file) return process.cwd();
-  return dirname(resolve(file));
-}
-
 function stripRuleCheck<T extends { check: unknown }>(rule: T): Omit<T, 'check'> {
   const { check: _check, ...rest } = rule;
   return rest;
@@ -242,3 +195,39 @@ program.parseAsync(process.argv).catch((err) => {
   printError(err);
   process.exit(2);
 });
+
+async function analyzeSingleSource(
+  source: Awaited<ReturnType<typeof resolveAnalyzeSource>>,
+  options: Parameters<typeof analyze>[1],
+) {
+  if (!source) {
+    throw new Error('No prompt provided.');
+  }
+
+  if (source.kind === 'files') {
+    const [file] = source.files;
+    if (!file) {
+      throw new Error('No prompt files matched the provided inputs.');
+    }
+    return analyze(await readPromptFile(file.absolutePath), options);
+  }
+
+  return analyze(source.prompt, options);
+}
+
+async function analyzeFiles(
+  files: Array<{ absolutePath: string; displayPath: string }>,
+  options: Parameters<typeof analyze>[1],
+) {
+  const reports: Array<{ path: string; report: Awaited<ReturnType<typeof analyze>> }> = [];
+
+  for (const file of files) {
+    const prompt = await readPromptFile(file.absolutePath);
+    reports.push({
+      path: file.displayPath,
+      report: await analyze(prompt, options),
+    });
+  }
+
+  return reports;
+}

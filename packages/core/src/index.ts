@@ -33,6 +33,16 @@ export type { Profile, ProfileRuleOverride } from './profiles/types.js';
 export { builtinProfiles, getBuiltinProfile } from './profiles/builtin.js';
 export type { BuiltinProfileName } from './profiles/builtin.js';
 
+export { buildBatchReport, countFindings } from './batch/index.js';
+export type {
+  BatchFileReport,
+  BatchReport,
+  BatchReportInput,
+  BatchSummary,
+  BatchWorstFile,
+  SeverityCounts,
+} from './batch/index.js';
+
 export { runRules, buildReport } from './scorer/index.js';
 export type { ScoreReport, CategoryScore, Suggestion, RunRulesOptions } from './scorer/index.js';
 

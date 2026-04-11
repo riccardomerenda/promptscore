@@ -2,7 +2,7 @@
 
 **Static analysis for LLM prompts.** ESLint, but for prompts.
 
-PromptScore analyzes a prompt *before* it is sent to a model and returns a score plus actionable feedback — what's missing, what's ambiguous, and what you could improve — with references to model-specific best practices.
+PromptScore analyzes a prompt *before* it is sent to a model and returns a score plus actionable feedback: what is missing, what is ambiguous, and what you could improve, with references to model-specific best practices.
 
 > This is **not** an LLM evaluation framework. It does not measure output quality. It scores the *input* based on structural analysis and known prompt-engineering best practices.
 
@@ -11,12 +11,12 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 ## Why?
 
 - Writing effective prompts is hard, and best practices keep changing.
-- Most existing tools either rewrite your prompt as a black box (no learning) or evaluate model outputs (a different problem).
-- There is no widely adopted linter that gives you a score, flags issues, and teaches you why — the way ESLint does for JavaScript.
+- Most existing tools either rewrite your prompt as a black box or evaluate model outputs, which is a different problem.
+- There is no widely adopted linter that gives you a score, flags issues, and teaches you why, the way ESLint does for JavaScript.
 
 ## Status
 
-PromptScore is in early development (**v0.1 — MVP**). The deterministic rules, library, CLI, profiles, docs, landing page, and browser analyzer are ready. LLM-backed rules, richer browser workflows, and more profiles are still on the roadmap.
+PromptScore is in early development (**v0.2 - configurable prompt linting**). The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config, and batch CLI workflows are ready. LLM-backed rules, richer browser workflows, and more profiles are still on the roadmap.
 
 ---
 
@@ -39,6 +39,12 @@ promptscore analyze prompt.txt
 # analyze with a specific model profile
 promptscore analyze prompt.txt --model claude
 
+# analyze a directory of prompt files
+promptscore analyze prompts/
+
+# analyze with a glob and emit aggregate JSON
+promptscore analyze "prompts/**/*.{txt,md}" --format json
+
 # analyze an inline prompt
 promptscore analyze --inline "You are a helpful assistant. Answer questions."
 
@@ -52,7 +58,7 @@ promptscore analyze prompt.txt --rules no-examples,no-output-format
 promptscore analyze prompt.txt --config ./configs/team.yaml
 
 # fail CI on warnings, not just errors
-promptscore analyze prompt.txt --fail-on warning
+promptscore analyze prompts/ --fail-on warning
 
 # list all rules and profiles
 promptscore rules
@@ -61,11 +67,11 @@ promptscore profiles
 
 ### Example output
 
-```
-PromptScore — profile: claude
+```text
+PromptScore - profile: claude
 
-Overall  62/100  [██████████████████░░░░░░░░░░░░]
-Score 62/100 — 1 error, 3 warnings, 2 info.
+Overall  62/100  [##################------------]
+Score 62/100 - 1 error, 3 warnings, 2 info.
 
 Categories
   clarity           70/100 (3 rules)
@@ -74,10 +80,10 @@ Categories
   best-practice     45/100 (2 rules)
 
 Findings
-  error   missing-task  No explicit task detected.
-           → State the task explicitly: "Your task is to..."
-  warn    no-examples   No examples provided.
-           → Add 1–3 concrete examples showing the input and the expected output.
+  error  missing-task  No explicit task detected.
+         -> State the task explicitly: "Your task is to..."
+  warn   no-examples   No examples provided.
+         -> Add 1-3 concrete examples showing the input and the expected output.
   ...
 ```
 
@@ -99,9 +105,7 @@ console.log('Overall:', report.overall);
 
 ## Project config
 
-PromptScore can auto-discover a project config file from the current directory or the analyzed
-file path. Supported names include `promptscore.config.yaml`, `promptscore.config.json`, and
-`.promptscorerc`.
+PromptScore can auto-discover a project config file from the current directory or the analyzed file path. Supported names include `promptscore.config.yaml`, `promptscore.config.json`, and `.promptscorerc`.
 
 ```yaml
 model: claude
@@ -113,10 +117,11 @@ fail_on_severity: warning
 profiles_dir: ./profiles
 ```
 
-CLI flags override config values, so a project can default to `claude` while a one-off run still
-uses `--model gpt`.
+CLI flags override config values, so a project can default to `claude` while a one-off run still uses `--model gpt`.
 
-## Rules (v0.1)
+When you pass a directory, PromptScore recursively analyzes `.txt`, `.md`, `.markdown`, and `.prompt` files while skipping common build folders like `node_modules`, `.git`, `dist`, and `.next`. Use a glob when you want custom file types or tighter control over the batch.
+
+## Rules (v0.2)
 
 | Rule ID | Category | What it checks |
 | --- | --- | --- |
@@ -126,7 +131,7 @@ uses `--model gpt`.
 | `no-examples` | best-practice | Few-shot examples are provided |
 | `no-role` | best-practice | A role or persona is assigned |
 | `no-context` | specificity | Background context is provided |
-| `ambiguous-negation` | clarity | Positive instructions over negations |
+| `ambiguous-negation` | clarity | Prefer positive instructions over negations |
 | `no-constraints` | specificity | Explicit constraints are defined |
 | `all-caps-abuse` | clarity | ALL CAPS is not overused |
 | `vague-instruction` | clarity | No vague qualifiers without definition |
@@ -137,23 +142,23 @@ See [`docs/rules.md`](docs/rules.md) for details.
 
 ## Profiles
 
-Profiles are YAML files under `profiles/` that configure which rules apply and with what weight for a specific model. v0.1 ships with:
+Profiles are YAML files under `profiles/` that configure which rules apply and with what weight for a specific model. PromptScore currently ships with:
 
-- `_base` — the universal baseline
-- `claude` — Anthropic Claude (extends `_base`)
-- `gpt` — OpenAI GPT (extends `_base`)
+- `_base` - the universal baseline
+- `claude` - Anthropic Claude (extends `_base`)
+- `gpt` - OpenAI GPT (extends `_base`)
 
 ## Project structure
 
-```
+```text
 promptscore/
-├── packages/
-│   ├── core/       # @promptscore/core — library
-│   ├── cli/        # @promptscore/cli — CLI
-│   └── web/        # promptscore.dev — landing page
-├── profiles/       # YAML profiles
-├── examples/       # good and bad prompt examples
-└── docs/
+|-- packages/
+|   |-- core/       # @promptscore/core - library
+|   |-- cli/        # @promptscore/cli - CLI
+|   `-- web/        # promptscore.dev - landing page
+|-- profiles/       # YAML profiles
+|-- examples/       # good and bad prompt examples
+`-- docs/
 ```
 
 ## Development
@@ -171,6 +176,7 @@ Run the CLI locally:
 
 ```bash
 node packages/cli/dist/index.js analyze examples/good/classifier.txt --model claude
+node packages/cli/dist/index.js analyze examples/
 ```
 
 ## Roadmap
@@ -183,4 +189,4 @@ PRs welcome. See [`docs/contributing.md`](docs/contributing.md).
 
 ## License
 
-MIT © Riccardo Merenda
+MIT (c) Riccardo Merenda

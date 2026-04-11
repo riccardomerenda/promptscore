@@ -20,10 +20,17 @@ export default function GettingStartedPage() {
       </section>
 
       <section className="docs-section">
-        <h2>Analyze a file, inline prompt, or stdin</h2>
-        <p>The `analyze` command accepts a file path, an inline string, or piped stdin.</p>
+        <h2>Analyze a file, directory, glob, inline prompt, or stdin</h2>
+        <p>
+          The `analyze` command accepts prompt files, directories of prompt-like text files, glob
+          patterns, inline strings, or piped stdin.
+        </p>
         <pre className="docs-code-block">
-          <code>{`promptscore analyze prompt.txt\npromptscore analyze --inline "You are a helpful assistant."\ncat prompt.txt | promptscore analyze`}</code>
+          <code>{`promptscore analyze prompt.txt
+promptscore analyze prompts/
+promptscore analyze "prompts/**/*.{txt,md}"
+promptscore analyze --inline "You are a helpful assistant."
+cat prompt.txt | promptscore analyze`}</code>
         </pre>
       </section>
 

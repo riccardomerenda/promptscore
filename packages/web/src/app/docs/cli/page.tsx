@@ -16,11 +16,28 @@ export default function CliPage() {
         </p>
         <pre className="docs-code-block">
           <code>{`promptscore analyze prompt.txt
+promptscore analyze prompts/
+promptscore analyze "prompts/**/*.{txt,md}" --format json
 promptscore analyze --inline "You are a helpful assistant."
 promptscore analyze prompt.txt --model gpt --format json
 promptscore analyze prompt.txt --rules missing-task,no-output-format
 promptscore rules
 promptscore profiles`}</code>
+        </pre>
+      </section>
+
+      <section className="docs-section">
+        <h2>Directory and glob analysis</h2>
+        <p>
+          `analyze` accepts files, directories, and glob patterns. Directory inputs recurse through
+          `.txt`, `.md`, `.markdown`, and `.prompt` files while skipping common build folders like
+          `node_modules`, `.git`, `.next`, and `dist`. Use globs when you want custom file types or
+          tighter matching.
+        </p>
+        <pre className="docs-code-block">
+          <code>{`promptscore analyze prompts/
+promptscore analyze "prompts/**/*.{txt,md}" --fail-on warning
+promptscore analyze prompts/ examples/reviews/*.md`}</code>
         </pre>
       </section>
 
@@ -76,11 +93,13 @@ echo "You are a helpful assistant." | promptscore analyze --model _base`}</code>
       </section>
 
       <section className="docs-section">
-        <h2>Current v0.1 boundaries</h2>
+        <h2>Current boundaries</h2>
         <ul className="docs-list">
-          <li>Directory and glob analysis are not part of `v0.1` yet.</li>
           <li>LLM-powered rules are not active by default and are still roadmap work.</li>
-          <li>The CLI is a thin wrapper around the shared deterministic core engine.</li>
+          <li>
+            Directory inputs are intentionally conservative and focus on prompt-like text files.
+          </li>
+          <li>The CLI is still a thin wrapper around the shared deterministic core engine.</li>
         </ul>
       </section>
     </DocsArticle>
