@@ -58,7 +58,8 @@ jobs:
         id: product-version
         shell: bash
         run: |
-          echo "value=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
+          version=$(node -p "require('./package.json').version")
+          echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create product release
         if: steps.changesets.outputs.published == 'true'
