@@ -1,6 +1,6 @@
 {
   "name": "promptscore-monorepo",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "Static analysis for LLM prompts — ESLint, but for prompts.",
   "license": "MIT",
