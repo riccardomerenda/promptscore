@@ -1,5 +1,16 @@
 # @promptscore/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- 87fe16e: Add directory and glob analysis with aggregate batch reporting.
+
+### Patch Changes
+
+- Updated dependencies [87fe16e]
+  - @promptscore/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
