@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -27,12 +24,12 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
       - name: Use Node.js 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
@@ -63,7 +60,7 @@ jobs:
 
       - name: Create product release
         if: steps.changesets.outputs.published == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           PRODUCT_VERSION: ${{ steps.product-version.outputs.value }}
         with:
