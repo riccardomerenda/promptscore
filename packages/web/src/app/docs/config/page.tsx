@@ -39,7 +39,9 @@ profiles_dir: ./profiles`}</code>
           <li>`format`: default output format for CLI runs.</li>
           <li>`rules`: restrict analysis to a specific rule subset.</li>
           <li>`include_llm`: opt into LLM-backed rules when they are available.</li>
-          <li>`fail_on_severity`: treat warnings or info findings as CI failures.</li>
+          <li>
+            `fail_on_severity`: treat warnings or info findings as CI failures, even in batches.
+          </li>
           <li>
             `profiles_dir`: load profiles from a custom directory relative to the config file.
           </li>

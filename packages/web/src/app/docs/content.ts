@@ -31,7 +31,8 @@ export const docsNavigation: DocsNavSection[] = [
       {
         href: '/docs/cli',
         title: 'CLI Guide',
-        description: 'Analyze files, inline prompts, and stdin with CI-friendly exit codes.',
+        description:
+          'Analyze files, directories, globs, inline prompts, and stdin with CI-friendly exit codes.',
       },
       {
         href: '/docs/config',

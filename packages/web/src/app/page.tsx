@@ -125,7 +125,10 @@ export default function Home() {
           <div className="feature-card">
             <div className="feature-icon blue">&#x2192;</div>
             <h3>CI/CD Ready</h3>
-            <p>Use the CLI in CI today. It exits non-zero when error-level findings are present.</p>
+            <p>
+              Use the CLI in CI today. It can scan prompt directories and exits non-zero when
+              findings meet your configured failure threshold.
+            </p>
           </div>
           <div className="feature-card">
             <div className="feature-icon yellow">&#x26A0;</div>

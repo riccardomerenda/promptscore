@@ -1,0 +1,139 @@
+import { describe, expect, it } from 'vitest';
+import { format } from '../reporter/index.js';
+import type { ScoreReport } from '../scorer/index.js';
+import type { RuleResult } from '../rules/types.js';
+import { buildBatchReport, countFindings } from './index.js';
+
+describe('batch reporting', () => {
+  it('counts findings by severity', () => {
+    const counts = countFindings([
+      createResult({ ruleId: 'missing-task', passed: false, severity: 'error' }),
+      createResult({ ruleId: 'no-output-format', passed: false, severity: 'warning' }),
+      createResult({ ruleId: 'no-role', passed: false, severity: 'info' }),
+      createResult({ ruleId: 'min-length', passed: true, severity: 'info' }),
+    ]);
+
+    expect(counts).toEqual({
+      error: 1,
+      warning: 1,
+      info: 1,
+      total: 3,
+    });
+  });
+
+  it('builds aggregate summaries and sorts worst files', () => {
+    const batch = buildBatchReport([
+      {
+        path: 'examples/good/classifier.txt',
+        report: createReport({
+          overall: 91,
+          profileName: 'claude',
+          results: [createResult({ ruleId: 'missing-task', passed: true, severity: 'error' })],
+        }),
+      },
+      {
+        path: 'examples/bad/vague.txt',
+        report: createReport({
+          overall: 25,
+          profileName: 'gpt',
+          results: [
+            createResult({ ruleId: 'vague-instruction', passed: false, severity: 'warning' }),
+          ],
+        }),
+      },
+      {
+        path: 'examples/bad/no-format.txt',
+        report: createReport({
+          overall: 40,
+          profileName: 'gpt',
+          results: [
+            createResult({ ruleId: 'no-output-format', passed: false, severity: 'error' }),
+            createResult({ ruleId: 'no-examples', passed: false, severity: 'warning' }),
+          ],
+        }),
+      },
+    ]);
+
+    expect(batch.summary.files).toBe(3);
+    expect(batch.summary.failedFiles).toBe(2);
+    expect(batch.summary.passedFiles).toBe(1);
+    expect(Math.round(batch.summary.averageScore)).toBe(52);
+    expect(batch.summary.findings).toEqual({
+      error: 1,
+      warning: 2,
+      info: 0,
+      total: 3,
+    });
+    expect(batch.summary.profiles).toEqual(['claude', 'gpt']);
+    expect(batch.worstFiles.map((file) => file.path)).toEqual([
+      'examples/bad/vague.txt',
+      'examples/bad/no-format.txt',
+      'examples/good/classifier.txt',
+    ]);
+  });
+
+  it('formats batch reports in text, json, and markdown', () => {
+    const batch = buildBatchReport([
+      {
+        path: 'examples/bad/vague.txt',
+        report: createReport({
+          overall: 25,
+          profileName: 'gpt',
+          results: [
+            createResult({ ruleId: 'vague-instruction', passed: false, severity: 'warning' }),
+          ],
+        }),
+      },
+      {
+        path: 'examples/good/classifier.txt',
+        report: createReport({
+          overall: 91,
+          profileName: 'gpt',
+          results: [createResult({ ruleId: 'missing-task', passed: true, severity: 'error' })],
+        }),
+      },
+    ]);
+
+    const text = format(batch, 'text', { color: false });
+    const json = format(batch, 'json');
+    const markdown = format(batch, 'markdown');
+
+    expect(text).toContain('PromptScore — batch report');
+    expect(text).toContain('Files');
+    expect(text).toContain('Findings By File');
+    expect(json).toContain('"kind": "batch"');
+    expect(markdown).toContain('# PromptScore — batch report');
+    expect(markdown).toContain('## Files');
+  });
+});
+
+function createReport(input: {
+  overall: number;
+  profileName: string;
+  results: RuleResult[];
+}): ScoreReport {
+  return {
+    overall: input.overall,
+    categories: [],
+    summary: `Score ${Math.round(input.overall)}/100`,
+    suggestions: [],
+    results: input.results,
+    profileName: input.profileName,
+  };
+}
+
+function createResult(
+  overrides: Partial<RuleResult> & Pick<RuleResult, 'ruleId' | 'passed' | 'severity'>,
+): RuleResult {
+  return {
+    ruleId: overrides.ruleId,
+    passed: overrides.passed,
+    score: overrides.passed ? 100 : 25,
+    message: overrides.ruleId,
+    severity: overrides.severity,
+    category: overrides.category ?? 'clarity',
+    weight: overrides.weight ?? 1,
+    suggestion: overrides.suggestion ?? 'Tighten the prompt.',
+    reference: overrides.reference,
+  };
+}
