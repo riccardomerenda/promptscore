@@ -1,6 +1,6 @@
 # Rules catalog
 
-All rules in v0.1 are **deterministic** — they run locally without any model call.
+All rules in the current public release are **deterministic** - they run locally without any model call.
 
 Each rule produces a `RuleResult`:
 
@@ -8,7 +8,7 @@ Each rule produces a `RuleResult`:
 interface RuleResult {
   ruleId: string;
   passed: boolean;
-  score: number; // 0–100
+  score: number; // 0-100
   message: string;
   suggestion?: string;
   reference?: string;
@@ -20,40 +20,40 @@ interface RuleResult {
 
 ## Deterministic rules
 
-### `min-length` — specificity
+### `min-length` - specificity
 Flags prompts with fewer than 20 words. Short prompts rarely give the model enough to work with.
 
-### `max-length` — structure
+### `max-length` - structure
 Flags prompts over 1500 words. Very long prompts tend to contain redundancy and dilute focus.
 
-### `no-output-format` — specificity
+### `no-output-format` - specificity
 Flags prompts that do not specify how the answer should be formatted (JSON, list, sentence, etc.).
 
-### `no-examples` — best-practice
+### `no-examples` - best-practice
 Flags prompts with no few-shot examples. Examples dramatically improve consistency.
 
-### `no-role` — best-practice
+### `no-role` - best-practice
 Flags prompts with no assigned role or persona.
 
-### `no-context` — specificity
+### `no-context` - specificity
 Flags prompts with no background context. Exception: very long prompts are assumed to provide implicit context.
 
-### `ambiguous-negation` — clarity
+### `ambiguous-negation` - clarity
 Flags heavy use of `don't`, `never`, `avoid`, etc. Positive instructions work better.
 
-### `no-constraints` — specificity
+### `no-constraints` - specificity
 Flags prompts that don't set any constraints (length, scope, style).
 
-### `all-caps-abuse` — clarity
+### `all-caps-abuse` - clarity
 Flags excessive ALL-CAPS words. Use bold or XML tags for emphasis instead.
 
-### `vague-instruction` — clarity
+### `vague-instruction` - clarity
 Flags vague qualifiers like `good`, `nice`, `proper`, `appropriate`.
 
-### `missing-task` — clarity
+### `missing-task` - clarity
 Flags prompts with no detectable task. This is an `error` and the highest-weight rule.
 
-### `no-structured-format` — structure
+### `no-structured-format` - structure
 Flags long prompts (>100 words) that have no XML tags, markdown headers, or numbered sections.
 
 ## Writing your own rules

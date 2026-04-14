@@ -37,8 +37,9 @@ cat prompt.txt | promptscore analyze`}</code>
       <section className="docs-section">
         <h2>Choose a profile</h2>
         <p>
-          `v0.1` ships with `_base`, `claude`, and `gpt`. Profiles adjust weight, severity,
-          suggestions, and references while using the same deterministic core engine.
+          The current public release ships with `_base`, `claude`, and `gpt`. Profiles adjust
+          weight, severity, suggestions, and references while using the same deterministic core
+          engine.
         </p>
         <pre className="docs-code-block">
           <code>{`promptscore analyze prompt.txt --model claude\npromptscore profiles`}</code>

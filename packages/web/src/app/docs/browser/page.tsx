@@ -39,8 +39,8 @@ console.log(formatText(report));`}</code>
       <section className="docs-section">
         <h2>Privacy model</h2>
         <p>
-          The current `v0.1` browser analyzer is local-first. Deterministic analysis does not send
-          prompts to an external API.
+          The current browser analyzer is local-first. Deterministic analysis does not send prompts
+          to an external API.
         </p>
         <div className="docs-callout">
           <strong>Important:</strong> future opt-in LLM-backed rules should be clearly separated

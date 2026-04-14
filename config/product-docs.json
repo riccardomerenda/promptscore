@@ -1,0 +1,102 @@
+{
+  "status": {
+    "phase": "early development",
+    "availableToday": [
+      "deterministic rules",
+      "library",
+      "CLI",
+      "profiles",
+      "docs",
+      "landing page",
+      "browser analyzer",
+      "project config discovery",
+      "directory and glob batch workflows"
+    ],
+    "roadmapItems": ["LLM-backed rules", "richer browser workflows", "more profiles"]
+  },
+  "baseline": {
+    "releaseDate": "2026-04-14",
+    "includes": [
+      "12 deterministic rules",
+      "model profiles for `_base`, `claude`, and `gpt`",
+      "`@promptscore/core` for Node and browser usage",
+      "`promptscore` CLI",
+      "project config discovery and CLI policy controls",
+      "directory and glob analysis with aggregate batch reporting",
+      "a browser analyzer on `promptscore.dev`",
+      "a first-class `/docs` section on `promptscore.dev`",
+      "docs, examples, CI validation, and an automated Changesets-based release workflow"
+    ],
+    "summary": "This is a real MVP. It is useful today, but it is still missing optional LLM-backed rules, richer browser workflows, editor integrations, suppression mechanics, and team collaboration."
+  },
+  "releasePlan": [
+    {
+      "version": "v0.1.x",
+      "window": "Shipped",
+      "theme": "Stabilize the MVP",
+      "deliverables": "Deterministic linting foundation, profiles, core library, CLI, browser analyzer, docs foundation, and release-ready validation workflows."
+    },
+    {
+      "version": "v0.2.0",
+      "window": "Shipped",
+      "theme": "Configurable prompt linting",
+      "deliverables": "Project config discovery, CLI policy controls, and the first CI-friendly defaults for teams adopting PromptScore in repositories."
+    },
+    {
+      "version": "v0.3.0",
+      "window": "Shipped",
+      "theme": "Batch workflows",
+      "deliverables": "Directory and glob analysis with aggregate batch reporting, shared release version syncing, and stronger changelog/release automation."
+    },
+    {
+      "version": "v0.4.0",
+      "window": "Q4 2026",
+      "theme": "Intelligent guidance",
+      "deliverables": "Optional LLM-backed rules behind explicit opt-in, provider configuration, reference-backed explanations, rewrite suggestions, benchmark fixtures, and regression tracking for false positives."
+    },
+    {
+      "version": "v0.5.0",
+      "window": "Q1 2027",
+      "theme": "Team beta",
+      "deliverables": "Hosted accounts, private workspaces, report history, shared policies, team review flows, cloud sync for reports, and early billing foundations."
+    },
+    {
+      "version": "v1.0.0",
+      "window": "H1 2027",
+      "theme": "Stable platform",
+      "deliverables": "Stable config format, stable JSON schema, stable core API, official editor integration, production-ready GitHub Action, hosted workspaces GA, and the first enterprise-ready governance features."
+    }
+  ],
+  "releaseMeaning": [
+    {
+      "version": "v0.1.x",
+      "summary": "made PromptScore trustworthy."
+    },
+    {
+      "version": "v0.2.0",
+      "summary": "made PromptScore configurable in real projects."
+    },
+    {
+      "version": "v0.3.0",
+      "summary": "makes PromptScore usable across repeat repository workflows."
+    },
+    {
+      "version": "v0.4.0",
+      "summary": "should make PromptScore smarter without losing its deterministic identity."
+    },
+    {
+      "version": "v0.5.0",
+      "summary": "should prove that a hosted collaboration layer adds real value."
+    },
+    {
+      "version": "v1.0.0",
+      "summary": "should signal stability, integrations, and long-term compatibility."
+    }
+  ],
+  "immediateNextMoves": [
+    "Keep docs, site copy, and changelogs aligned with the shipped version.",
+    "Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.",
+    "Prioritize `v0.4.0` around optional LLM-backed rules, provider configuration, and reference-backed guidance before expanding into hosted features.",
+    "Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently."
+  ]
+}

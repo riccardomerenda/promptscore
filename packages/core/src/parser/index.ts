@@ -76,7 +76,7 @@ function countWords(text: string): number {
 
 function detectLanguage(text: string): string {
   // Very naive: just check for common English stopwords; default to 'en'.
-  // A proper implementation would use a library, but v0.1 ships without it.
+  // A proper implementation would use a library, but the current parser keeps dependencies minimal.
   const sample = text.toLowerCase().slice(0, 2000);
   const englishMarkers = /\b(?:the|and|you|your|that|this|with|for|are|not)\b/g;
   const matches = sample.match(englishMarkers);
