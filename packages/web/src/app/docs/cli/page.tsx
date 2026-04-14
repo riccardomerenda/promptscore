@@ -21,6 +21,7 @@ promptscore analyze "prompts/**/*.{txt,md}" --format json
 promptscore analyze --inline "You are a helpful assistant."
 promptscore analyze prompt.txt --model gpt --format json
 promptscore analyze prompt.txt --rules missing-task,no-output-format
+promptscore analyze prompt.txt --llm
 promptscore rules
 promptscore profiles`}</code>
         </pre>
@@ -64,6 +65,19 @@ promptscore analyze prompt.txt --fail-on warning`}</code>
       </section>
 
       <section className="docs-section">
+        <h2>Opt-in LLM rules</h2>
+        <p>
+          Use `--llm` when you want PromptScore to run experimental LLM-backed rules in addition to
+          the deterministic registry. This path remains explicit and requires provider config plus
+          an API key environment variable.
+        </p>
+        <pre className="docs-code-block">
+          <code>{`promptscore analyze prompt.txt --llm
+promptscore analyze prompt.txt --config ./promptscore.config.yaml --llm`}</code>
+        </pre>
+      </section>
+
+      <section className="docs-section">
         <h2>Exit codes</h2>
         <ul className="docs-list">
           <li>
@@ -95,11 +109,11 @@ echo "You are a helpful assistant." | promptscore analyze --model _base`}</code>
       <section className="docs-section">
         <h2>Current boundaries</h2>
         <ul className="docs-list">
-          <li>LLM-powered rules are not active by default and are still roadmap work.</li>
+          <li>LLM-powered rules are experimental, opt-in, and require provider configuration.</li>
           <li>
             Directory inputs are intentionally conservative and focus on prompt-like text files.
           </li>
-          <li>The CLI is still a thin wrapper around the shared deterministic core engine.</li>
+          <li>The CLI remains a thin wrapper around the shared core engine and rule registry.</li>
         </ul>
       </section>
     </DocsArticle>

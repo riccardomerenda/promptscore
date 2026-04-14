@@ -1,6 +1,6 @@
 # Rules catalog
 
-All rules in the current public release are **deterministic** - they run locally without any model call.
+The current tagged public release (`v0.3.0`) ships deterministic rules only. The `main` branch also contains an experimental opt-in foundation for LLM-backed rules that is aimed at the upcoming `v0.4.0` line.
 
 Each rule produces a `RuleResult`:
 
@@ -55,6 +55,13 @@ Flags prompts with no detectable task. This is an `error` and the highest-weight
 
 ### `no-structured-format` - structure
 Flags long prompts (>100 words) that have no XML tags, markdown headers, or numbered sections.
+
+## LLM-backed rules (experimental, opt-in)
+
+These rules are skipped unless you enable `--llm` in the CLI or `include_llm: true` in project config and provide a configured LLM client.
+
+### `llm-prompt-review` - model-specific
+Uses a configured LLM to catch hidden ambiguity, missing grounding, conflicting instructions, unrealistic task framing, and unclear success criteria that deterministic rules may miss.
 
 ## Writing your own rules
 

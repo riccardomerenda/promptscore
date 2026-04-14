@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import {
   analyze,
   buildBatchReport,
+  createLlmClient,
   createDefaultRegistry,
   format,
   loadPromptScoreConfig,
@@ -83,6 +84,7 @@ program
         model,
         only,
         includeLlm,
+        llmClient: includeLlm ? createLlmClient(loadedConfig.config.llm) : undefined,
         profileOptions: loadedConfig.config.profilesDir
           ? { profilesDir: loadedConfig.config.profilesDir }
           : undefined,

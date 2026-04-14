@@ -3,6 +3,7 @@ import { parsePrompt } from '../parser/index.js';
 import { buildReport, runRules } from './index.js';
 import { deterministicRules } from '../rules/deterministic/index.js';
 import type { Profile } from '../profiles/types.js';
+import { llmPromptReviewRule } from '../rules/llm/index.js';
 
 const profile: Profile = {
   name: 'test',
@@ -33,5 +34,18 @@ describe('scorer', () => {
       const curr = report.suggestions[i]!.impact;
       expect(prev).toBeGreaterThanOrEqual(curr);
     }
+  });
+
+  it('throws a helpful error when llm rules are enabled without a client', async () => {
+    const ast = parsePrompt('You are a helpful assistant. Summarize this article.');
+
+    await expect(
+      runRules({
+        rules: [llmPromptReviewRule],
+        profile,
+        ast,
+        includeLlm: true,
+      }),
+    ).rejects.toThrow('LLM-backed rules were enabled but no LLM client is configured');
   });
 });

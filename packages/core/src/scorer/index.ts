@@ -1,5 +1,6 @@
 import type { PromptAST } from '../parser/types.js';
 import type { Profile } from '../profiles/types.js';
+import type { LlmClient } from '../llm/types.js';
 import type { Rule, RuleCategory, RuleResult } from '../rules/types.js';
 
 export interface CategoryScore {
@@ -32,6 +33,7 @@ export interface RunRulesOptions {
   ast: PromptAST;
   only?: string[];
   includeLlm?: boolean;
+  llmClient?: LlmClient;
 }
 
 function isRuleEnabled(rule: Rule, profile: Profile): boolean {
@@ -53,12 +55,23 @@ function applyOverride(result: RuleResult, profile: Profile): RuleResult {
 }
 
 export async function runRules(options: RunRulesOptions): Promise<RuleResult[]> {
-  const { rules, profile, ast, only, includeLlm } = options;
+  const { rules, profile, ast, only, includeLlm, llmClient } = options;
   const results: RuleResult[] = [];
   for (const rule of rules) {
     if (only && !only.includes(rule.id)) continue;
     if (!isRuleEnabled(rule, profile)) continue;
     if (rule.type === 'llm' && !includeLlm) continue;
+    if (rule.type === 'llm') {
+      if (!llmClient) {
+        throw new Error(
+          'LLM-backed rules were enabled but no LLM client is configured. Set `llm.provider` and the required API key, or pass an `llmClient` programmatically.',
+        );
+      }
+      const base = await rule.check({ ast, profile, llm: llmClient });
+      results.push(applyOverride(base, profile));
+      continue;
+    }
+
     const base = await rule.check({ ast, profile });
     results.push(applyOverride(base, profile));
   }

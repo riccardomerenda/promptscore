@@ -1,4 +1,5 @@
 import { parsePrompt } from './parser/index.js';
+import { createLlmClient, type LlmClient } from './llm/index.js';
 import { createDefaultRegistry, type RuleRegistry } from './rules/registry.js';
 import { ProfileLoader, type ProfileLoaderOptions } from './profiles/loader.js';
 import { buildReport, runRules, type ScoreReport } from './scorer/index.js';
@@ -13,6 +14,7 @@ export type {
   Rule,
   RuleCategory,
   RuleContext,
+  LlmRuleContext,
   RuleResult,
   RuleSeverity,
   RuleType,
@@ -24,8 +26,19 @@ export type {
   ConfigReportFormat,
   FailOnSeverity,
   LoadedPromptScoreConfig,
+  PromptScoreLlmConfig,
+  PromptScoreLlmProvider,
   PromptScoreConfig,
 } from './config/types.js';
+
+export { createLlmClient, createOpenAiResponsesClient } from './llm/index.js';
+export type {
+  LlmClient,
+  LlmGenerateTextRequest,
+  LlmGenerateTextResponse,
+  LlmProvider,
+  LlmUsage,
+} from './llm/index.js';
 
 export { ProfileLoader } from './profiles/loader.js';
 export type { ProfileLoaderOptions } from './profiles/loader.js';
@@ -50,6 +63,7 @@ export { format, formatText, formatJson, formatMarkdown } from './reporter/index
 export type { ReportFormat, TextReporterOptions } from './reporter/index.js';
 
 export { deterministicRules } from './rules/deterministic/index.js';
+export { llmRules, llmPromptReviewRule } from './rules/llm/index.js';
 
 export interface AnalyzeOptions {
   /** Model profile name (e.g. "claude", "gpt"). Defaults to "_base". */
@@ -58,6 +72,8 @@ export interface AnalyzeOptions {
   only?: string[];
   /** Run LLM-backed rules. Default: false. */
   includeLlm?: boolean;
+  /** Client used by LLM-backed rules when includeLlm is true. */
+  llmClient?: LlmClient;
   /** Override the rule registry. */
   registry?: RuleRegistry;
   /** Profile loader options. */
@@ -91,6 +107,7 @@ export async function analyze(prompt: string, options: AnalyzeOptions = {}): Pro
     ast,
     only: options.only,
     includeLlm: options.includeLlm,
+    llmClient: options.llmClient,
   });
 
   return buildReport(results, profile);

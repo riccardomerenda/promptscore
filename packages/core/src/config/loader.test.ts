@@ -36,6 +36,11 @@ describe('loadPromptScoreConfig', () => {
         '  - missing-task',
         '  - no-output-format',
         'include_llm: true',
+        'llm:',
+        '  provider: openai',
+        '  model: gpt-5-mini',
+        '  api_key_env: OPENAI_API_KEY',
+        '  base_url: https://api.openai.com/v1',
         'color: false',
         'fail_on_severity: warning',
         'profiles_dir: ./custom-profiles',
@@ -52,6 +57,12 @@ describe('loadPromptScoreConfig', () => {
       format: 'markdown',
       rules: ['missing-task', 'no-output-format'],
       includeLlm: true,
+      llm: {
+        provider: 'openai',
+        model: 'gpt-5-mini',
+        apiKeyEnv: 'OPENAI_API_KEY',
+        baseUrl: 'https://api.openai.com/v1',
+      },
       color: false,
       failOnSeverity: 'warning',
       profilesDir: join(dir, 'custom-profiles'),
@@ -100,6 +111,17 @@ describe('loadPromptScoreConfig', () => {
 
     await expect(loadPromptScoreConfig({ cwd: dir })).rejects.toThrow(
       'Invalid config value for "failOnSeverity"',
+    );
+  });
+
+  it('throws a helpful error for invalid llm config values', async () => {
+    const dir = await createTempDir();
+    const configPath = join(dir, 'promptscore.config.yaml');
+
+    await writeFile(configPath, 'llm:\n  provider: anthropic\n', 'utf8');
+
+    await expect(loadPromptScoreConfig({ cwd: dir })).rejects.toThrow(
+      'Invalid config value for "llm.provider"',
     );
   });
 });
