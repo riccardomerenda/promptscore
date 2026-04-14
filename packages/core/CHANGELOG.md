@@ -1,5 +1,15 @@
 # @promptscore/core
 
+## 0.4.0
+
+### Minor Changes
+
+- d2d94a3: Add the v0.4.0 foundation for opt-in LLM-backed rules.
+  - introduce configurable LLM client support in `@promptscore/core`
+  - add the first experimental `llm-prompt-review` rule behind explicit opt-in
+  - wire `promptscore analyze --llm` through project config and runtime client creation
+  - document the new config, privacy boundary, and browser/CLI behavior
+
 ## 0.3.0
 
 ### Minor Changes
