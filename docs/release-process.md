@@ -35,6 +35,21 @@ This repository is set up so that future work does not depend on chat memory.
 - The repository still owns the site source and static export build, but Cloudflare Pages owns the actual publish step and custom-domain serving.
 - `.github/workflows/live-site-smoke.yml` verifies the live site after pushes to `main` and can also be run manually with `workflow_dispatch`.
 
+## Expected Cloudflare Pages settings
+
+These settings are the expected production values for the current repository layout.
+
+| Setting | Expected value | Why |
+| --- | --- | --- |
+| Production branch | `main` | Releases and live-site verification are centered on `main`. |
+| Build command | `npm ci && npm run build:web:static` | Installs workspace dependencies and builds the static site plus required workspace dependencies. |
+| Build output directory | `packages/web/out` | `@promptscore/web` uses Next.js static export and writes the deployable site there. |
+| Root directory | repository root | The web package depends on workspace packages from the monorepo, especially `@promptscore/core`. |
+| Node version | `>=18.17.0` | Matches the repository engine constraint; CI currently validates 18, 20, and 22. |
+| Custom domain | `promptscore.dev` | Canonical production domain. |
+
+If Cloudflare Pages needs a single command to mirror the repository expectation, prefer `npm run build:web:static` over ad-hoc build commands.
+
 ## What still needs manual ownership
 
 - Cloudflare Pages settings such as production branch, build command, output directory, and environment variables should be kept consistent with the repo, because they are managed outside version control unless explicitly documented elsewhere.
