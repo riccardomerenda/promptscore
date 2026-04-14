@@ -1,12 +1,6 @@
 import type { PromptScoreLlmConfig } from '../config/types.js';
 import { createOpenAiResponsesClient } from './openai.js';
-import type {
-  LlmClient,
-  LlmGenerateTextRequest,
-  LlmGenerateTextResponse,
-  LlmProvider,
-  LlmUsage,
-} from './types.js';
+import type { LlmClient, LlmProvider } from './types.js';
 
 const DEFAULT_OPENAI_MODEL = 'gpt-5-mini';
 const DEFAULT_OPENAI_API_KEY_ENV = 'OPENAI_API_KEY';
