@@ -1,5 +1,5 @@
 import { parsePrompt } from './parser/index.js';
-import { createLlmClient, type LlmClient } from './llm/index.js';
+import type { LlmClient } from './llm/index.js';
 import { createDefaultRegistry, type RuleRegistry } from './rules/registry.js';
 import { ProfileLoader, type ProfileLoaderOptions } from './profiles/loader.js';
 import { buildReport, runRules, type ScoreReport } from './scorer/index.js';
