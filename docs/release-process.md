@@ -13,6 +13,7 @@ This repository is set up so that future work does not depend on chat memory.
 - `npm run sync-release-version` updates the generated version modules after a version bump.
 - `npm run sync:docs` regenerates the version-sensitive blocks in `README.md` and `ROADMAP.md` and verifies the generated version modules.
 - `npm run check:docs-sync` fails if the generated docs blocks or version modules are out of sync.
+- `npm run check:live-site` polls `promptscore.dev` until the live homepage exposes the current repo version and `/docs/` returns HTTP 200.
 - `npm run version-packages` already runs the release version sync and docs sync as part of the Changesets flow.
 
 ## CI behavior
@@ -24,6 +25,7 @@ This repository is set up so that future work does not depend on chat memory.
 - `promptscore.dev` is deployed through Cloudflare Pages connected directly to this GitHub repository.
 - That means the landing-page deploy path lives in Cloudflare configuration, not in a GitHub Actions workflow inside this repository.
 - The repository still owns the site source and static export build, but Cloudflare Pages owns the actual publish step and custom-domain serving.
+- `.github/workflows/live-site-smoke.yml` verifies the live site after pushes to `main` and can also be run manually with `workflow_dispatch`.
 
 ## What still needs manual ownership
 

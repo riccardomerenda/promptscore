@@ -16,6 +16,7 @@
   "scripts": {
     "build": "turbo run build",
     "check:docs-sync": "node scripts/sync-product-docs.mjs --check",
+    "check:live-site": "node scripts/check-live-site.mjs --version-path / --path /docs/",
     "changeset": "changeset",
     "dev": "turbo run dev",
     "test": "turbo run test",

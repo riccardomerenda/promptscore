@@ -1,0 +1,55 @@
+name: Live Site Smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Base URL to verify
+        required: false
+        default: https://promptscore.dev
+      timeout_ms:
+        description: Total time to wait for the live site to update
+        required: false
+        default: '900000'
+      interval_ms:
+        description: Delay between retries
+        required: false
+        default: '15000'
+
+concurrency:
+  group: live-site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Verify promptscore.dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Smoke check live site
+        env:
+          INPUT_BASE_URL: ${{ inputs.base_url }}
+          INPUT_TIMEOUT_MS: ${{ inputs.timeout_ms }}
+          INPUT_INTERVAL_MS: ${{ inputs.interval_ms }}
+        shell: bash
+        run: |
+          base_url="${INPUT_BASE_URL:-https://promptscore.dev}"
+          timeout_ms="${INPUT_TIMEOUT_MS:-900000}"
+          interval_ms="${INPUT_INTERVAL_MS:-15000}"
+
+          node scripts/check-live-site.mjs \
+            --base-url "$base_url" \
+            --timeout-ms "$timeout_ms" \
+            --interval-ms "$interval_ms" \
+            --version-path "/" \
+            --path "/docs/"
