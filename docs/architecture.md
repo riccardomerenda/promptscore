@@ -12,7 +12,7 @@ raw prompt -> parser -> PromptAST -> rules engine -> RuleResult[] -> scorer -> S
 
 - **`@promptscore/core`** - the library. Pure TypeScript, runs in Node and browser. Exposes `analyze`, `parsePrompt`, the rule registry, the profile loader, the scorer, and reporters.
 - **`@promptscore/cli`** - the published CLI package. It installs the `promptscore` terminal command as a thin `commander`-based wrapper around the core library.
-- **`@promptscore/web`** - the landing page for [promptscore.dev](https://promptscore.dev). Static Next.js site with a browser analyzer powered by the deterministic core engine.
+- **`@promptscore/web`** - the landing page for [promptscore.dev](https://promptscore.dev). Static Next.js site with a browser analyzer that stays deterministic and local-first by default.
 
 ## Parser
 
@@ -22,14 +22,14 @@ It does **not** need to be perfect. A reasonable best-effort parse is enough for
 
 ## Rules engine
 
-Every rule implements the `Rule` interface and is registered in a `RuleRegistry`. The default registry is populated with the 12 deterministic rules that ship in the current public release.
+Every rule implements the `Rule` interface and is registered in a `RuleRegistry`. The default registry can contain both deterministic and LLM-backed rules, but the LLM-backed path is skipped unless analysis explicitly enables it and provides a configured client.
 
 Each rule receives a `RuleContext` - the `PromptAST` plus the active `Profile` - and returns a `RuleResult`. Results can be adjusted by the profile: severity, weight, suggestion, and reference can all be overridden per model.
 
 Rules come in two flavors:
 
-- **`deterministic`** - fast, no external calls. All currently shipped rules work this way today.
-- **`llm`** - planned for a future release. These rules would call an external LLM to evaluate a specific aspect of the prompt and must remain explicitly opt-in via `--llm`.
+- **`deterministic`** - fast, no external calls. This remains the default path across the CLI, core library, and browser analyzer.
+- **`llm`** - experimental foundation for the upcoming `v0.4.0` line. These rules call an external LLM through an injected or configured client and must remain explicitly opt-in via `--llm` or `include_llm`.
 
 ## Profiles
 
@@ -62,6 +62,10 @@ The reporter formats a `ScoreReport` into:
 - **text** - colored terminal output (default for CLI).
 - **json** - machine-readable, stable shape.
 - **markdown** - for docs, PRs, and future browser surfaces.
+
+## Privacy boundary
+
+PromptScore stays local-first unless you opt into the LLM rule path. Deterministic analysis never leaves the local runtime. LLM-backed rules should be surfaced clearly in product UX because they send prompt text to the configured provider.
 
 ## Zero heavy dependencies
 

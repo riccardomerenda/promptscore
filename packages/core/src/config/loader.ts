@@ -7,7 +7,9 @@ import type {
   FailOnSeverity,
   LoadedPromptScoreConfig,
   PromptScoreConfig,
+  PromptScoreLlmConfig,
   RawPromptScoreConfig,
+  RawPromptScoreLlmConfig,
 } from './types.js';
 
 const CONFIG_FILES = [
@@ -107,6 +109,14 @@ function normalizeConfig(raw: RawPromptScoreConfig, path: string): PromptScoreCo
     config.includeLlm = expectBoolean(includeLlm, 'includeLlm', path);
   }
 
+  const llm = pick(raw, 'llm');
+  if (llm !== undefined) {
+    if (!isRecord(llm)) {
+      throw new Error(`Config value "llm" must be an object in ${path}`);
+    }
+    config.llm = normalizeLlmConfig(llm as RawPromptScoreLlmConfig, path);
+  }
+
   const color = pick(raw, 'color');
   if (color !== undefined) {
     config.color = expectBoolean(color, 'color', path);
@@ -129,10 +139,46 @@ function normalizeConfig(raw: RawPromptScoreConfig, path: string): PromptScoreCo
   return config;
 }
 
-function pick(raw: RawPromptScoreConfig, ...keys: Array<keyof RawPromptScoreConfig>): unknown {
+function normalizeLlmConfig(raw: RawPromptScoreLlmConfig, path: string): PromptScoreLlmConfig {
+  const config: PromptScoreLlmConfig = {};
+
+  const provider = pick(raw, 'provider');
+  if (provider !== undefined) {
+    const normalized = expectString(provider, 'llm.provider', path);
+    if (normalized !== 'openai') {
+      throw new Error(`Invalid config value for "llm.provider" in ${path}: ${normalized}`);
+    }
+    config.provider = normalized;
+  }
+
+  const model = pick(raw, 'model');
+  if (model !== undefined) {
+    config.model = expectString(model, 'llm.model', path);
+  }
+
+  const apiKeyEnv = pick(raw, 'apiKeyEnv', 'api_key_env');
+  if (apiKeyEnv !== undefined) {
+    config.apiKeyEnv = expectString(apiKeyEnv, 'llm.apiKeyEnv', path);
+  }
+
+  const baseUrl = pick(raw, 'baseUrl', 'base_url');
+  if (baseUrl !== undefined) {
+    const normalized = expectString(baseUrl, 'llm.baseUrl', path);
+    try {
+      config.baseUrl = new URL(normalized).toString().replace(/\/$/, '');
+    } catch {
+      throw new Error(`Config value "llm.baseUrl" must be a valid URL in ${path}`);
+    }
+  }
+
+  return config;
+}
+
+function pick<T extends object>(raw: T, ...keys: Array<keyof T>): unknown {
+  const record = raw as Record<PropertyKey, unknown>;
   for (const key of keys) {
-    if (raw[key] !== undefined) {
-      return raw[key];
+    if (record[key] !== undefined) {
+      return record[key];
     }
   }
   return undefined;

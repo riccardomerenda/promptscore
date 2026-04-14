@@ -15,6 +15,10 @@ export default function BrowserPage() {
           <li>Runs the deterministic rule registry locally.</li>
           <li>Builds the same `ScoreReport` shape used by the CLI and the Node library.</li>
           <li>Uses built-in `_base`, `claude`, and `gpt` profiles instead of the YAML loader.</li>
+          <li>
+            Leaves the hosted `promptscore.dev` analyzer offline by default, with no injected LLM
+            client.
+          </li>
         </ul>
       </section>
 
@@ -34,6 +38,10 @@ const report = await analyzeWithProfile('You are a helpful assistant. Summarize 
 console.log(report.overall);
 console.log(formatText(report));`}</code>
         </pre>
+        <p>
+          Custom browser integrations can also pass `includeLlm: true` and an injected `llmClient`,
+          but the hosted site does not enable that path today.
+        </p>
       </section>
 
       <section className="docs-section">
@@ -43,9 +51,9 @@ console.log(formatText(report));`}</code>
           to an external API.
         </p>
         <div className="docs-callout">
-          <strong>Important:</strong> future opt-in LLM-backed rules should be clearly separated
-          from the offline deterministic workflow so users always know when data would leave the
-          browser.
+          <strong>Important:</strong> if you build a custom browser UI with an injected `llmClient`,
+          keep that path clearly separated from the offline deterministic workflow so users always
+          know when data would leave the browser.
         </div>
       </section>
 

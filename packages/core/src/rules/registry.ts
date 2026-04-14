@@ -1,5 +1,6 @@
 import type { Rule } from './types.js';
 import { deterministicRules } from './deterministic/index.js';
+import { llmRules } from './llm/index.js';
 
 export class RuleRegistry {
   private readonly rules = new Map<string, Rule>();
@@ -44,5 +45,5 @@ export class RuleRegistry {
 }
 
 export function createDefaultRegistry(): RuleRegistry {
-  return new RuleRegistry(deterministicRules);
+  return new RuleRegistry([...deterministicRules, ...llmRules]);
 }

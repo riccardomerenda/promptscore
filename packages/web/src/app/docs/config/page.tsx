@@ -6,7 +6,7 @@ export default function ConfigPage() {
       currentHref="/docs/config"
       eyebrow="Config"
       title="Configure PromptScore once per project"
-      lead="PromptScore can discover a project config automatically so teams can share model defaults, rule subsets, profile directories, and CI failure thresholds."
+      lead="PromptScore can discover a project config automatically so teams can share model defaults, rule subsets, profile directories, opt-in LLM settings, and CI failure thresholds."
     >
       <section className="docs-section">
         <h2>Supported file names</h2>
@@ -26,7 +26,11 @@ format: markdown
 rules:
   - missing-task
   - no-output-format
-include_llm: false
+include_llm: true
+llm:
+  provider: openai
+  model: gpt-5-mini
+  api_key_env: OPENAI_API_KEY
 fail_on_severity: warning
 profiles_dir: ./profiles`}</code>
         </pre>
@@ -38,7 +42,11 @@ profiles_dir: ./profiles`}</code>
           <li>`model`: default profile for analysis.</li>
           <li>`format`: default output format for CLI runs.</li>
           <li>`rules`: restrict analysis to a specific rule subset.</li>
-          <li>`include_llm`: opt into LLM-backed rules when they are available.</li>
+          <li>`include_llm`: opt into experimental LLM-backed rules for CLI or Node runs.</li>
+          <li>`llm.provider`: choose the external provider. Today, `openai` is supported.</li>
+          <li>`llm.model`: choose the model used for opt-in LLM-backed rules.</li>
+          <li>`llm.api_key_env`: choose which environment variable stores the API key.</li>
+          <li>`llm.base_url`: override the provider base URL when needed.</li>
           <li>
             `fail_on_severity`: treat warnings or info findings as CI failures, even in batches.
           </li>
@@ -46,6 +54,19 @@ profiles_dir: ./profiles`}</code>
             `profiles_dir`: load profiles from a custom directory relative to the config file.
           </li>
         </ul>
+      </section>
+
+      <section className="docs-section">
+        <h2>LLM activation model</h2>
+        <p>
+          `include_llm` does not send prompt text anywhere by itself. Prompt text only leaves the
+          local runtime when you both enable LLM-backed rules and provide a configured provider
+          client through the CLI or programmatic API.
+        </p>
+        <div className="docs-callout">
+          <strong>Note:</strong> the hosted browser analyzer on `promptscore.dev` stays
+          deterministic by default and does not inject a provider client.
+        </div>
       </section>
 
       <section className="docs-section">

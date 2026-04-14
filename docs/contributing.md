@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in improving PromptScore. This project is in early development — expect rough edges.
+Thanks for your interest in improving PromptScore. This project is in early development, so expect rough edges.
 
 ## Setup
 
@@ -21,12 +21,14 @@ node packages/cli/dist/index.js analyze examples/good/classifier.txt --model cla
 
 ## Adding a rule
 
-1. Create a new file under `packages/core/src/rules/deterministic/` (or `llm/` when that's ready).
-2. Export a `Rule` const that implements the `Rule` interface from `../types.js`.
-3. Register it in `packages/core/src/rules/deterministic/index.ts`.
-4. Add a test case under `rules.test.ts`.
-5. Document the rule in `docs/rules.md`.
-6. If the rule has a strong model affinity, add weight/severity overrides to the relevant profile YAML.
+1. Create a new file under `packages/core/src/rules/deterministic/` or `packages/core/src/rules/llm/`.
+2. Export a `Rule` const that implements the `Rule` interface from `../types.js`, including the correct `type` discriminator.
+3. Register the rule in the matching index file so the default registry can discover it.
+4. Add a focused test next to the source file or in the relevant shared rule test file.
+5. For `llm` rules, stub `LlmClient` in tests and cover structured output parsing plus failure paths.
+6. Document the rule in `docs/rules.md`.
+7. If the rule changes the public config or CLI workflow, update the relevant docs pages under `packages/web/src/app/docs/`.
+8. If the rule has a strong model affinity, add weight or severity overrides to the relevant profile YAML.
 
 ## Adding a profile
 

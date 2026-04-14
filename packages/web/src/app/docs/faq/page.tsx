@@ -9,7 +9,7 @@ const FAQS = [
   {
     question: 'Does PromptScore send prompts to external APIs?',
     answer:
-      'Not in the current deterministic workflow. The CLI, core library, and browser analyzer all run the shipped rule set locally unless you explicitly opt into future LLM-backed rules.',
+      'Not by default. The deterministic workflow stays local. Prompt text is only sent to an external provider when you explicitly enable LLM-backed rules and configure a provider client or API key.',
   },
   {
     question: 'Why have model profiles if the rules are deterministic?',
@@ -34,7 +34,7 @@ const FAQS = [
   {
     question: 'Will browser and CLI results match?',
     answer:
-      'That is the goal. The browser analyzer uses the same deterministic rule and scoring pipeline, with built-in profiles replacing filesystem-loaded YAML.',
+      'That is the goal for the deterministic pipeline. The browser analyzer uses the same rule and scoring flow with built-in profiles replacing filesystem-loaded YAML, while custom LLM-enabled integrations depend on the client you inject.',
   },
 ];
 

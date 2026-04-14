@@ -1,4 +1,5 @@
 import { parsePrompt } from './parser/index.js';
+import type { LlmClient } from './llm/types.js';
 import { getBuiltinProfile, type BuiltinProfileName } from './profiles/builtin.js';
 import type { Profile } from './profiles/types.js';
 import { createDefaultRegistry, type RuleRegistry } from './rules/registry.js';
@@ -13,10 +14,18 @@ export type {
   Rule,
   RuleCategory,
   RuleContext,
+  LlmRuleContext,
   RuleResult,
   RuleSeverity,
   RuleType,
 } from './rules/types.js';
+export type {
+  LlmClient,
+  LlmGenerateTextRequest,
+  LlmGenerateTextResponse,
+  LlmProvider,
+  LlmUsage,
+} from './llm/index.js';
 
 export { builtinProfiles, getBuiltinProfile } from './profiles/builtin.js';
 export type { BuiltinProfileName } from './profiles/builtin.js';
@@ -29,12 +38,14 @@ export { format, formatText, formatJson, formatMarkdown } from './reporter/index
 export type { ReportFormat, TextReporterOptions } from './reporter/index.js';
 
 export { deterministicRules } from './rules/deterministic/index.js';
+export { llmRules, llmPromptReviewRule } from './rules/llm/index.js';
 
 export interface AnalyzeBrowserOptions {
   profile?: Profile;
   profileName?: BuiltinProfileName;
   only?: string[];
   includeLlm?: boolean;
+  llmClient?: LlmClient;
   registry?: RuleRegistry;
   extraRules?: Rule[];
 }
@@ -59,6 +70,7 @@ export async function analyzeWithProfile(
     ast,
     only: options.only,
     includeLlm: options.includeLlm,
+    llmClient: options.llmClient,
   });
 
   return buildReport(results, profile);
