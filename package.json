@@ -15,6 +15,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:web:static": "turbo run build --filter=@promptscore/web",
     "check:docs-sync": "node scripts/sync-product-docs.mjs --check",
     "check:live-site": "node scripts/check-live-site.mjs --version-path / --path /docs/",
     "changeset": "changeset",
