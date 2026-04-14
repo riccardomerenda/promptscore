@@ -32,6 +32,18 @@ npm install -g @promptscore/cli
 npx @promptscore/cli analyze prompt.txt
 ```
 
+## Published packages
+
+PromptScore currently distributes public packages through npm.
+
+| Package | Purpose | Canonical install |
+| --- | --- | --- |
+| [`@promptscore/cli`](https://www.npmjs.com/package/@promptscore/cli) | End-user CLI with the `promptscore` command | `npm install -g @promptscore/cli` |
+| [`@promptscore/core`](https://www.npmjs.com/package/@promptscore/core) | Core analysis library for Node and browser integrations | `npm install @promptscore/core` |
+| `@promptscore/web` | Static site package for `promptscore.dev` | Not published |
+
+GitHub Releases are used for versioned release notes, but npm is the canonical package registry for installation. The repository's GitHub Packages tab may remain empty because PromptScore does not currently publish to GitHub Packages.
+
 ## Usage
 
 ```bash
