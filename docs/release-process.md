@@ -16,6 +16,14 @@ This repository is set up so that future work does not depend on chat memory.
 - `npm run check:live-site` polls `promptscore.dev` until the live homepage exposes the current repo version and `/docs/` returns HTTP 200.
 - `npm run version-packages` already runs the release version sync and docs sync as part of the Changesets flow.
 
+## Package distribution
+
+- The canonical public package registry is npm.
+- `@promptscore/cli` and `@promptscore/core` are the public packages intended for installation by users and integrators.
+- `@promptscore/web` exists inside the monorepo for the landing page build, but it is not published as an installable public package.
+- GitHub Releases are part of the release story, but GitHub Packages is not currently used as a publish target for PromptScore.
+- Because of that choice, the repository's GitHub Packages tab may stay empty even when npm packages and GitHub Releases are up to date.
+
 ## CI behavior
 
 `.github/workflows/ci.yml` runs `npm run check:docs-sync`, so stale docs or version modules are caught on every push and pull request to `main`.
