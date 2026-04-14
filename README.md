@@ -16,7 +16,9 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 
 ## Status
 
-PromptScore is in early development (**v0.2 - configurable prompt linting**). The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config, and batch CLI workflows are ready. LLM-backed rules, richer browser workflows, and more profiles are still on the roadmap.
+<!-- generated:product-status:start -->
+PromptScore is in early development and the current shipped version is **v0.3.0**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, and directory and glob batch workflows are available today. LLM-backed rules, richer browser workflows, and more profiles are still on the roadmap.
+<!-- generated:product-status:end -->
 
 ---
 
@@ -121,7 +123,7 @@ CLI flags override config values, so a project can default to `claude` while a o
 
 When you pass a directory, PromptScore recursively analyzes `.txt`, `.md`, `.markdown`, and `.prompt` files while skipping common build folders like `node_modules`, `.git`, `dist`, and `.next`. Use a glob when you want custom file types or tighter control over the batch.
 
-## Rules (v0.2)
+## Rules in the current public release
 
 | Rule ID | Category | What it checks |
 | --- | --- | --- |
@@ -178,6 +180,18 @@ Run the CLI locally:
 node packages/cli/dist/index.js analyze examples/good/classifier.txt --model claude
 node packages/cli/dist/index.js analyze examples/
 ```
+
+## CI And Release Pipeline
+
+PromptScore uses GitHub Actions plus Changesets for CI and releases.
+
+- `.github/workflows/ci.yml` runs on pushes and pull requests to `main` across Node 18, 20, and 22. It installs dependencies, builds, lints, typechecks, tests, and runs `npm run format:check`.
+- `.github/workflows/release.yml` runs on pushes to `main`. It uses `changesets/action` to either open or update a `Version Packages` PR, or publish packages when release changesets are present.
+- `npm run version-packages` applies the version bump, updates changelogs, syncs the shared product version into the CLI and web app, and refreshes `package-lock.json`.
+- After a successful publish, the release workflow creates a GitHub release tagged as `vX.Y.Z`.
+- `packages/web` is a static Next.js export for `promptscore.dev`, but this repository does not currently include a GitHub Actions deploy workflow for the site itself.
+
+For the repository-side automation and what to update manually, see [`docs/release-process.md`](docs/release-process.md).
 
 ## Roadmap
 

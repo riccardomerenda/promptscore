@@ -25,10 +25,10 @@ export default function RulesPage() {
       currentHref="/docs/rules"
       eyebrow="Rules reference"
       title="Understand what the deterministic engine checks"
-      lead="All v0.1 rules are deterministic. They score the structure and clarity of the prompt itself, not the quality of a model response."
+      lead="All currently shipped rules are deterministic. They score the structure and clarity of the prompt itself, not the quality of a model response."
     >
       <section className="docs-section">
-        <h2>Rules in v0.1</h2>
+        <h2>Rules in the current public release</h2>
         <div className="docs-table-wrapper">
           <table className="docs-table">
             <thead>

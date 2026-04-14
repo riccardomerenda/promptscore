@@ -17,8 +17,8 @@ export default function DocsOverviewPage() {
         <section className="docs-section">
           <h2>What ships in the first docs release</h2>
           <p>
-            The first `/docs` version is intentionally focused: it explains the current `v0.1`
-            product clearly, documents the real CLI and browser analyzer behavior, and gives users a
+            This `/docs` section is intentionally focused: it explains the current public product
+            clearly, documents the real CLI and browser analyzer behavior, and gives users a
             trustworthy place to start.
           </p>
         </section>
