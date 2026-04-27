@@ -64,6 +64,7 @@ export type { ReportFormat, TextReporterOptions } from './reporter/index.js';
 
 export { deterministicRules } from './rules/deterministic/index.js';
 export { llmRules, llmPromptReviewRule } from './rules/llm/index.js';
+export type { PromptReviewIssueType } from './rules/llm/index.js';
 
 export interface AnalyzeOptions {
   /** Model profile name (e.g. "claude", "gpt"). Defaults to "_base". */

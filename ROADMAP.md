@@ -24,11 +24,13 @@ As of April 14, 2026, PromptScore v0.4.0 includes:
 - `promptscore` CLI
 - project config discovery and CLI policy controls
 - directory and glob analysis with aggregate batch reporting
+- experimental opt-in LLM prompt review with provider configuration
+- LLM regression benchmark fixtures
 - a browser analyzer on `promptscore.dev`
 - a first-class `/docs` section on `promptscore.dev`
 - docs, examples, CI validation, and an automated Changesets-based release workflow
 
-This is a real MVP. It is useful today, but it is still missing optional LLM-backed rules, richer browser workflows, editor integrations, suppression mechanics, and team collaboration.
+This is a real MVP. It is useful today, but it is still missing richer LLM guidance, rewrite suggestions, browser workflows, editor integrations, suppression mechanics, and team collaboration.
 <!-- generated:roadmap-baseline:end -->
 
 ## Versioning And Releases
@@ -61,7 +63,7 @@ Documentation is now a near-term product priority. PromptScore teaches users why
 | `v0.1.x` | Shipped | Stabilize the MVP | Deterministic linting foundation, profiles, core library, CLI, browser analyzer, docs foundation, and release-ready validation workflows. |
 | `v0.2.0` | Shipped | Configurable prompt linting | Project config discovery, CLI policy controls, and the first CI-friendly defaults for teams adopting PromptScore in repositories. |
 | `v0.3.0` | Shipped | Batch workflows | Directory and glob analysis with aggregate batch reporting, shared release version syncing, and stronger changelog/release automation. |
-| `v0.4.0` | Q4 2026 | Intelligent guidance | Optional LLM-backed rules behind explicit opt-in, provider configuration, reference-backed explanations, rewrite suggestions, benchmark fixtures, and regression tracking for false positives. |
+| `v0.4.0` | Shipped | Intelligent guidance | Optional LLM-backed prompt review behind explicit opt-in, provider configuration, issue-specific guidance, benchmark fixtures, and regression tracking for false positives. |
 | `v0.5.0` | Q1 2027 | Team beta | Hosted accounts, private workspaces, report history, shared policies, team review flows, cloud sync for reports, and early billing foundations. |
 | `v1.0.0` | H1 2027 | Stable platform | Stable config format, stable JSON schema, stable core API, official editor integration, production-ready GitHub Action, hosted workspaces GA, and the first enterprise-ready governance features. |
 <!-- generated:roadmap-release-plan:end -->
@@ -72,7 +74,7 @@ Documentation is now a near-term product priority. PromptScore teaches users why
 - `v0.1.x` made PromptScore trustworthy.
 - `v0.2.0` made PromptScore configurable in real projects.
 - `v0.3.0` makes PromptScore usable across repeat repository workflows.
-- `v0.4.0` should make PromptScore smarter without losing its deterministic identity.
+- `v0.4.0` made PromptScore smarter without losing its deterministic identity.
 - `v0.5.0` should prove that a hosted collaboration layer adds real value.
 - `v1.0.0` should signal stability, integrations, and long-term compatibility.
 <!-- generated:roadmap-release-meaning:end -->
@@ -100,6 +102,6 @@ PromptScore should not declare `v1.0.0` until the following are true:
 <!-- generated:roadmap-next-moves:start -->
 - Keep docs, site copy, and changelogs aligned with the shipped version.
 - Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.
-- Prioritize `v0.4.0` around optional LLM-backed rules, provider configuration, and reference-backed guidance before expanding into hosted features.
+- Expand the `v0.4.x` line around reference-backed explanations, rewrite suggestions, and stronger LLM regression fixtures before expanding into hosted features.
 - Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently.
 <!-- generated:roadmap-next-moves:end -->

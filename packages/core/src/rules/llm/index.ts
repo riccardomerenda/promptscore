@@ -4,3 +4,4 @@ import { llmPromptReviewRule } from './prompt-review.js';
 export const llmRules: Rule[] = [llmPromptReviewRule];
 
 export { llmPromptReviewRule };
+export type { PromptReviewIssueType } from './prompt-review.js';

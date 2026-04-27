@@ -1,6 +1,6 @@
 # Rules catalog
 
-The current tagged public release (`v0.3.0`) ships deterministic rules only. The `main` branch also contains an experimental opt-in foundation for LLM-backed rules that is aimed at the upcoming `v0.4.0` line.
+The current public release (`v0.4.0`) ships deterministic rules plus an experimental opt-in LLM review rule. The deterministic rules stay local by default; the LLM rule path only runs when explicitly enabled and configured.
 
 Each rule produces a `RuleResult`:
 
@@ -63,6 +63,17 @@ These rules are skipped unless you enable `--llm` in the CLI or `include_llm: tr
 ### `llm-prompt-review` - model-specific
 Uses a configured LLM to catch hidden ambiguity, missing grounding, conflicting instructions, unrealistic task framing, and unclear success criteria that deterministic rules may miss.
 
+When the model reports a failure, PromptScore normalizes the review into one of these issue types:
+
+- `ambiguity`
+- `grounding`
+- `conflict`
+- `task-framing`
+- `success-criteria`
+- `general`
+
+Failed messages and suggestions are prefixed with issue-specific labels, so CLI and JSON consumers get more structured guidance without a new report schema.
+
 ## LLM regression fixtures
 
 The LLM rule path has a deterministic benchmark harness that uses mocked model responses. It does not call an external provider. Run it before changing LLM rule prompts, parsing, score thresholds, or guidance copy:
@@ -71,7 +82,7 @@ The LLM rule path has a deterministic benchmark harness that uses mocked model r
 npm run benchmark:llm
 ```
 
-The fixture set checks expected pass/fail classification, score ranges, guidance keywords, and the request context sent to the configured LLM client.
+The fixture set checks expected pass/fail classification, issue labels, score ranges, guidance keywords, and the request context sent to the configured LLM client.
 
 ## Writing your own rules
 

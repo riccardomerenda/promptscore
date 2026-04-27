@@ -10,9 +10,10 @@
       "landing page",
       "browser analyzer",
       "project config discovery",
-      "directory and glob batch workflows"
+      "directory and glob batch workflows",
+      "experimental opt-in LLM prompt review"
     ],
-    "roadmapItems": ["LLM-backed rules", "richer browser workflows", "more profiles"]
+    "roadmapItems": ["rewrite suggestions", "richer browser workflows", "more profiles"]
   },
   "baseline": {
     "releaseDate": "2026-04-14",
@@ -23,11 +24,13 @@
       "`promptscore` CLI",
       "project config discovery and CLI policy controls",
       "directory and glob analysis with aggregate batch reporting",
+      "experimental opt-in LLM prompt review with provider configuration",
+      "LLM regression benchmark fixtures",
       "a browser analyzer on `promptscore.dev`",
       "a first-class `/docs` section on `promptscore.dev`",
       "docs, examples, CI validation, and an automated Changesets-based release workflow"
     ],
-    "summary": "This is a real MVP. It is useful today, but it is still missing optional LLM-backed rules, richer browser workflows, editor integrations, suppression mechanics, and team collaboration."
+    "summary": "This is a real MVP. It is useful today, but it is still missing richer LLM guidance, rewrite suggestions, browser workflows, editor integrations, suppression mechanics, and team collaboration."
   },
   "releasePlan": [
     {
@@ -50,9 +53,9 @@
     },
     {
       "version": "v0.4.0",
-      "window": "Q4 2026",
+      "window": "Shipped",
       "theme": "Intelligent guidance",
-      "deliverables": "Optional LLM-backed rules behind explicit opt-in, provider configuration, reference-backed explanations, rewrite suggestions, benchmark fixtures, and regression tracking for false positives."
+      "deliverables": "Optional LLM-backed prompt review behind explicit opt-in, provider configuration, issue-specific guidance, benchmark fixtures, and regression tracking for false positives."
     },
     {
       "version": "v0.5.0",
@@ -82,7 +85,7 @@
     },
     {
       "version": "v0.4.0",
-      "summary": "should make PromptScore smarter without losing its deterministic identity."
+      "summary": "made PromptScore smarter without losing its deterministic identity."
     },
     {
       "version": "v0.5.0",
@@ -96,7 +99,7 @@
   "immediateNextMoves": [
     "Keep docs, site copy, and changelogs aligned with the shipped version.",
     "Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.",
-    "Prioritize `v0.4.0` around optional LLM-backed rules, provider configuration, and reference-backed guidance before expanding into hosted features.",
+    "Expand the `v0.4.x` line around reference-backed explanations, rewrite suggestions, and stronger LLM regression fixtures before expanding into hosted features.",
     "Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently."
   ]
 }
