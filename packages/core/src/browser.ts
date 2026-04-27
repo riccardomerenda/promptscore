@@ -39,6 +39,7 @@ export type { ReportFormat, TextReporterOptions } from './reporter/index.js';
 
 export { deterministicRules } from './rules/deterministic/index.js';
 export { llmRules, llmPromptReviewRule } from './rules/llm/index.js';
+export type { PromptReviewIssueType } from './rules/llm/index.js';
 
 export interface AnalyzeBrowserOptions {
   profile?: Profile;

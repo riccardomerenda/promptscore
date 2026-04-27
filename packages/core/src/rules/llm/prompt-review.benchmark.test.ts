@@ -7,13 +7,31 @@ import {
   promptReviewBenchmarkCases,
   type PromptReviewBenchmarkCase,
 } from './prompt-review.fixtures.js';
-import { llmPromptReviewRule } from './prompt-review.js';
+import { llmPromptReviewRule, type PromptReviewIssueType } from './prompt-review.js';
 
 interface BenchmarkRun {
   fixture: PromptReviewBenchmarkCase;
   request: LlmGenerateTextRequest;
   result: RuleResult;
 }
+
+const ISSUE_LABELS: Record<PromptReviewIssueType, string> = {
+  ambiguity: 'Ambiguity',
+  conflict: 'Conflicting instructions',
+  grounding: 'Grounding',
+  'success-criteria': 'Success criteria',
+  'task-framing': 'Task framing',
+  general: 'Prompt quality',
+};
+
+const ISSUE_ACTIONS: Record<PromptReviewIssueType, string> = {
+  ambiguity: 'Make the ambiguous parts explicit',
+  conflict: 'Resolve the conflicting instructions',
+  grounding: 'Add the missing grounding',
+  'success-criteria': 'Define success criteria',
+  'task-framing': 'Reframe the task',
+  general: 'Tighten the prompt',
+};
 
 describe('llmPromptReviewRule benchmark fixtures', () => {
   it('keeps classification regressions at zero for curated prompt-review cases', async () => {
@@ -41,7 +59,13 @@ describe('llmPromptReviewRule benchmark fixtures', () => {
       expect(containsEveryKeyword(result.message, fixture.expectedMessageKeywords)).toBe(true);
 
       if (!fixture.expectedPassed) {
+        expect(result.message, `${fixture.id} issue label`).toMatch(
+          new RegExp(`^${escapeRegExp(ISSUE_LABELS[fixture.expectedIssueType])}:`),
+        );
         expect(result.suggestion, `${fixture.id} suggestion`).toBeDefined();
+        expect(result.suggestion, `${fixture.id} issue action`).toMatch(
+          new RegExp(`^${escapeRegExp(ISSUE_ACTIONS[fixture.expectedIssueType])}:`),
+        );
         expect(
           containsEveryKeyword(result.suggestion ?? '', fixture.expectedSuggestionKeywords),
         ).toBe(true);
@@ -59,6 +83,7 @@ describe('llmPromptReviewRule benchmark fixtures', () => {
       expect(request.input).toContain('Profile name: gpt');
       expect(request.input).toContain('Profile best practices:');
       expect(request.instructions).toContain('Return only valid JSON');
+      expect(request.instructions).toContain('issue_type');
     }
   });
 });
@@ -103,4 +128,8 @@ function createFixtureLlmClient(
 function containsEveryKeyword(value: string, keywords: string[]): boolean {
   const normalized = value.toLowerCase();
   return keywords.every((keyword) => normalized.includes(keyword.toLowerCase()));
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

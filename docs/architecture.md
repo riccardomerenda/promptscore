@@ -29,7 +29,7 @@ Each rule receives a `RuleContext` - the `PromptAST` plus the active `Profile` -
 Rules come in two flavors:
 
 - **`deterministic`** - fast, no external calls. This remains the default path across the CLI, core library, and browser analyzer.
-- **`llm`** - experimental foundation for the upcoming `v0.4.0` line. These rules call an external LLM through an injected or configured client and must remain explicitly opt-in via `--llm` or `include_llm`.
+- **`llm`** - experimental opt-in rules introduced in `v0.4.0`. These rules call an external LLM through an injected or configured client and must remain explicitly opt-in via `--llm` or `include_llm`.
 
 ## Profiles
 
