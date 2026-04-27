@@ -19,6 +19,14 @@ npm test
 node packages/cli/dist/index.js analyze examples/good/classifier.txt --model claude
 ```
 
+## Running LLM regression fixtures
+
+```bash
+npm run benchmark:llm
+```
+
+The benchmark uses mocked LLM responses and does not call an external provider. Run it when changing LLM-backed rules, prompt-review instructions, output parsing, or expected guidance quality.
+
 ## Adding a rule
 
 1. Create a new file under `packages/core/src/rules/deterministic/` or `packages/core/src/rules/llm/`.
