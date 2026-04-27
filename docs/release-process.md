@@ -31,7 +31,7 @@ This repository is set up so that future work does not depend on chat memory.
 ## Release automation behavior
 
 - `.github/workflows/release.yml` opens or updates the `Version Packages` PR when changesets are waiting on `main`.
-- `.github/workflows/auto-merge-version-packages.yml` watches for a successful `CI` run on `changeset-release/main`, then merges the `Version Packages` PR automatically and deletes the release branch.
+- The same release workflow validates the generated `changeset-release/main` branch, merges the `Version Packages` PR automatically, and deletes the release branch.
 - The follow-up push to `main` then triggers the normal publish path, which creates the npm release, GitHub tag, and GitHub Release entry.
 
 ## Landing page deploy
