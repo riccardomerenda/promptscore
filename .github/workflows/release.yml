@@ -50,6 +50,78 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Checkout release PR branch
+        if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.hasChangesets == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: changeset-release/main
+          fetch-depth: 0
+
+      - name: Install release PR dependencies
+        if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.hasChangesets == 'true'
+        run: npm ci
+
+      - name: Validate release PR branch
+        if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.hasChangesets == 'true'
+        run: |
+          npm run build
+          npm run lint
+          npm run typecheck
+          npm run check:docs-sync
+          npm test
+          npm run format:check
+
+      - name: Merge Version Packages PR
+        if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.hasChangesets == 'true'
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { owner, repo } = context.repo;
+            const headRef = 'changeset-release/main';
+
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              head: `${owner}:${headRef}`,
+              base: 'main',
+              per_page: 100,
+            });
+
+            const pr = pulls.find((item) => item.title === 'Version Packages');
+
+            if (!pr) {
+              core.info(`No open Version Packages PR found for ${headRef}.`);
+              return;
+            }
+
+            core.info(`Merging PR #${pr.number}: ${pr.title}`);
+
+            await github.rest.pulls.merge({
+              owner,
+              repo,
+              pull_number: pr.number,
+              sha: pr.head.sha,
+              merge_method: 'squash',
+              commit_title: pr.title,
+            });
+
+            try {
+              await github.rest.git.deleteRef({
+                owner,
+                repo,
+                ref: `heads/${headRef}`,
+              });
+              core.info(`Deleted branch ${headRef}.`);
+            } catch (error) {
+              if (error.status === 404 || error.status === 422) {
+                core.info(`Branch ${headRef} was already deleted.`);
+                return;
+              }
+              throw error;
+            }
+
       - name: Read product version
         if: steps.changesets.outputs.published == 'true'
         id: product-version
