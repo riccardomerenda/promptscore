@@ -63,6 +63,16 @@ These rules are skipped unless you enable `--llm` in the CLI or `include_llm: tr
 ### `llm-prompt-review` - model-specific
 Uses a configured LLM to catch hidden ambiguity, missing grounding, conflicting instructions, unrealistic task framing, and unclear success criteria that deterministic rules may miss.
 
+## LLM regression fixtures
+
+The LLM rule path has a deterministic benchmark harness that uses mocked model responses. It does not call an external provider. Run it before changing LLM rule prompts, parsing, score thresholds, or guidance copy:
+
+```bash
+npm run benchmark:llm
+```
+
+The fixture set checks expected pass/fail classification, score ranges, guidance keywords, and the request context sent to the configured LLM client.
+
 ## Writing your own rules
 
 A rule is just an object implementing the `Rule` interface. Register it before calling `analyze`:

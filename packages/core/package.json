@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "benchmark:llm": "vitest run src/rules/llm/prompt-review.benchmark.test.ts --reporter verbose",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
