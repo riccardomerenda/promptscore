@@ -16,7 +16,7 @@ PromptScore is not trying to become a general agent platform, tracing tool, or f
 ## Current Baseline
 
 <!-- generated:roadmap-baseline:start -->
-As of April 14, 2026, PromptScore v0.4.0 includes:
+As of April 14, 2026, PromptScore v0.4.1 includes:
 
 - 12 deterministic rules
 - model profiles for `_base`, `claude`, and `gpt`
