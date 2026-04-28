@@ -72,6 +72,7 @@ jobs:
           npm run format:check
 
       - name: Merge Version Packages PR
+        id: merge-version-packages
         if: steps.changesets.outputs.published != 'true' && steps.changesets.outputs.hasChangesets == 'true'
         uses: actions/github-script@v8
         with:
@@ -93,12 +94,13 @@ jobs:
 
             if (!pr) {
               core.info(`No open Version Packages PR found for ${headRef}.`);
+              core.setOutput('merged', 'false');
               return;
             }
 
             core.info(`Merging PR #${pr.number}: ${pr.title}`);
 
-            await github.rest.pulls.merge({
+            const merge = await github.rest.pulls.merge({
               owner,
               repo,
               pull_number: pr.number,
@@ -106,6 +108,9 @@ jobs:
               merge_method: 'squash',
               commit_title: pr.title,
             });
+
+            core.setOutput('merge_sha', merge.data.sha);
+            core.setOutput('merged', 'true');
 
             try {
               await github.rest.git.deleteRef({
@@ -122,8 +127,20 @@ jobs:
               throw error;
             }
 
+      - name: Checkout merged Version Packages
+        if: steps.merge-version-packages.outputs.merged == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.merge-version-packages.outputs.merge_sha }}
+          fetch-depth: 0
+
+      - name: Publish merged Version Packages
+        id: auto-publish
+        if: steps.merge-version-packages.outputs.merged == 'true'
+        run: npm run release:publish
+
       - name: Read product version
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == 'true' || steps.auto-publish.outcome == 'success'
         id: product-version
         shell: bash
         run: |
@@ -131,15 +148,17 @@ jobs:
           echo "value=$version" >> "$GITHUB_OUTPUT"
 
       - name: Create product release
-        if: steps.changesets.outputs.published == 'true'
+        if: steps.changesets.outputs.published == 'true' || steps.auto-publish.outcome == 'success'
         uses: actions/github-script@v8
         env:
           PRODUCT_VERSION: ${{ steps.product-version.outputs.value }}
+          TARGET_COMMITISH: ${{ steps.merge-version-packages.outputs.merge_sha || github.sha }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const tag = `v${process.env.PRODUCT_VERSION}`;
             const { owner, repo } = context.repo;
+            const targetCommitish = process.env.TARGET_COMMITISH;
 
             try {
               await github.rest.repos.getReleaseByTag({ owner, repo, tag });
@@ -155,7 +174,7 @@ jobs:
               owner,
               repo,
               tag_name: tag,
-              target_commitish: context.sha,
+              target_commitish: targetCommitish,
               name: tag,
               generate_release_notes: true,
               make_latest: 'true',
