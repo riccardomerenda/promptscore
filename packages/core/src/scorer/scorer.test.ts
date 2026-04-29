@@ -36,6 +36,17 @@ describe('scorer', () => {
     }
   });
 
+  it('populates a reference URL for every deterministic rule result', async () => {
+    const ast = parsePrompt('do it');
+    const results = await runRules({ rules: deterministicRules, profile, ast });
+    expect(results).toHaveLength(deterministicRules.length);
+    for (const result of results) {
+      expect(result.reference, `${result.ruleId} should carry a reference`).toMatch(
+        /^https:\/\/promptscore\.dev\/docs\/rules#/,
+      );
+    }
+  });
+
   it('throws a helpful error when llm rules are enabled without a client', async () => {
     const ast = parsePrompt('You are a helpful assistant. Summarize this article.');
 

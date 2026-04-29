@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const NEGATION_PATTERN = /\b(?:don't|do not|never|avoid|shouldn't|should not|must not|mustn't)\b/gi;
 
@@ -26,6 +27,7 @@ export const ambiguousNegationRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Rewrite "don\'t do X" as "do Y instead". Tell the model what the desired behavior is.',
+      reference: referenceFor('ambiguous-negation'),
       severity: 'info',
       category: 'clarity',
       weight: 1,

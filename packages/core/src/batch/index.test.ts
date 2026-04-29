@@ -105,6 +105,32 @@ describe('batch reporting', () => {
     expect(markdown).toContain('# PromptScore — batch report');
     expect(markdown).toContain('## Files');
   });
+
+  it('renders rule references in batch text and markdown findings', () => {
+    const batch = buildBatchReport([
+      {
+        path: 'examples/bad/vague.txt',
+        report: createReport({
+          overall: 25,
+          profileName: 'gpt',
+          results: [
+            createResult({
+              ruleId: 'vague-instruction',
+              passed: false,
+              severity: 'warning',
+              reference: 'https://promptscore.dev/docs/rules#vague-instruction',
+            }),
+          ],
+        }),
+      },
+    ]);
+
+    const text = format(batch, 'text', { color: false });
+    const markdown = format(batch, 'markdown');
+
+    expect(text).toContain('see: https://promptscore.dev/docs/rules#vague-instruction');
+    expect(markdown).toContain('Reference: https://promptscore.dev/docs/rules#vague-instruction');
+  });
 });
 
 function createReport(input: {

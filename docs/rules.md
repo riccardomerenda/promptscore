@@ -2,6 +2,8 @@
 
 The current public release (`v0.4.0`) ships deterministic rules plus an experimental opt-in LLM review rule. The deterministic rules stay local by default; the LLM rule path only runs when explicitly enabled and configured.
 
+Every rule populates a `reference` URL on its `RuleResult`. The reference points to a stable anchor on [promptscore.dev/docs/rules](https://promptscore.dev/docs/rules) so users can read the rationale and fix guidance without leaving their flow. CLI text, markdown, and batch reporters render the reference next to the suggestion. Profiles can override `reference` per rule (the built-in `claude` and `gpt` profiles already point a few rules at upstream provider docs).
+
 Each rule produces a `RuleResult`:
 
 ```ts
@@ -72,7 +74,7 @@ When the model reports a failure, PromptScore normalizes the review into one of 
 - `success-criteria`
 - `general`
 
-Failed messages and suggestions are prefixed with issue-specific labels, so CLI and JSON consumers get more structured guidance without a new report schema.
+Failed messages and suggestions are prefixed with issue-specific labels, and the `reference` field on the result links to the matching anchor on `promptscore.dev/docs/rules` (e.g. `#llm-prompt-review-conflict`).
 
 ## LLM regression fixtures
 

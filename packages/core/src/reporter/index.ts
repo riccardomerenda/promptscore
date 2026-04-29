@@ -136,6 +136,9 @@ export function formatBatchText(report: BatchReport, options: TextReporterOption
         if (result.suggestion) {
           out.push(c('dim', `           → ${result.suggestion}`, color));
         }
+        if (result.reference) {
+          out.push(c('dim', `           see: ${result.reference}`, color));
+        }
       }
     }
     out.push('');
@@ -238,6 +241,9 @@ export function formatBatchMarkdown(report: BatchReport): string {
         out.push(`- \`${result.ruleId}\` (${result.severity}): ${result.message}`);
         if (result.suggestion) {
           out.push(`  Suggestion: ${result.suggestion}`);
+        }
+        if (result.reference) {
+          out.push(`  Reference: ${result.reference}`);
         }
       }
       out.push('');

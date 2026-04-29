@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 export const noRoleRule: Rule = {
   id: 'no-role',
@@ -19,6 +20,7 @@ export const noRoleRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Start with something like "You are a senior <X> who specializes in <Y>."',
+      reference: referenceFor('no-role'),
       severity: 'info',
       category: 'best-practice',
       weight: 1,

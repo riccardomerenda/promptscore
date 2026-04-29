@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 export const noExamplesRule: Rule = {
   id: 'no-examples',
@@ -20,6 +21,7 @@ export const noExamplesRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Add 1–3 concrete examples showing the input and the expected output.',
+      reference: referenceFor('no-examples'),
       severity: 'warning',
       category: 'best-practice',
       weight: 1,

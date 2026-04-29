@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const VAGUE_WORDS = [
   'good',
@@ -44,6 +45,7 @@ export const vagueInstructionRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Replace vague words with measurable criteria. "Good" → "concise (≤ 3 sentences) and citing sources".',
+      reference: referenceFor('vague-instruction'),
       severity: 'warning',
       category: 'clarity',
       weight: 1,
