@@ -1,5 +1,13 @@
 # @promptscore/cli
 
+## 0.4.3
+
+### Patch Changes
+
+- bcb3447: Fix the release workflow so the auto-merge publish step reinstalls dependencies after checking out the merged "Version Packages" commit. The previous run lost `node_modules` during the post-merge checkout, which made `turbo` unavailable and aborted the npm publish step. With this fix, the auto-merge → publish path works end to end.
+- Updated dependencies [bcb3447]
+  - @promptscore/core@0.4.3
+
 ## 0.4.2
 
 ### Patch Changes
