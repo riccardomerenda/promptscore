@@ -134,6 +134,10 @@ jobs:
           ref: ${{ steps.merge-version-packages.outputs.merge_sha }}
           fetch-depth: 0
 
+      - name: Install merged Version Packages dependencies
+        if: steps.merge-version-packages.outputs.merged == 'true'
+        run: npm ci
+
       - name: Publish merged Version Packages
         id: auto-publish
         if: steps.merge-version-packages.outputs.merged == 'true'
