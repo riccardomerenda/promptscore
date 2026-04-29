@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const LONG_PROMPT_THRESHOLD = 100;
 
@@ -27,6 +28,7 @@ export const noStructuredFormatRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Split the prompt into labeled sections: <instructions>, <context>, <examples>, <output_format>.',
+      reference: referenceFor('no-structured-format'),
       severity: 'warning',
       category: 'structure',
       weight: 1,

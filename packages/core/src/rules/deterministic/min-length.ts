@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const MIN_WORDS = 20;
 
@@ -23,6 +24,7 @@ export const minLengthRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Add more detail about what you want, why, and how the output should look.',
+      reference: referenceFor('min-length'),
       severity: 'warning',
       category: 'specificity',
       weight: 1,

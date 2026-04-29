@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 export const noContextRule: Rule = {
   id: 'no-context',
@@ -19,6 +20,7 @@ export const noContextRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Explain the situation: who the user is, why they’re asking, and what the stakes are.',
+      reference: referenceFor('no-context'),
       severity: 'info',
       category: 'specificity',
       weight: 1,

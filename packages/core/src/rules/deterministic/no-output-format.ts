@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 export const noOutputFormatRule: Rule = {
   id: 'no-output-format',
@@ -19,6 +20,7 @@ export const noOutputFormatRule: Rule = {
       suggestion: passed
         ? undefined
         : 'State the exact format: JSON schema, bullet list, markdown table, single sentence, etc.',
+      reference: referenceFor('no-output-format'),
       severity: 'warning',
       category: 'specificity',
       weight: 1,

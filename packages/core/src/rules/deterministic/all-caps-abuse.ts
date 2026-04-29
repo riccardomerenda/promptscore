@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const CAPS_WORD_PATTERN = /\b[A-Z]{4,}\b/g;
 
@@ -25,6 +26,7 @@ export const allCapsAbuseRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Use bold (**word**), quotes, or XML tags for emphasis instead of ALL CAPS.',
+      reference: referenceFor('all-caps-abuse'),
       severity: 'info',
       category: 'clarity',
       weight: 1,

@@ -62,6 +62,7 @@ describe('llmPromptReviewRule', () => {
     expect(result.passed).toBe(true);
     expect(result.score).toBe(91);
     expect(result.suggestion).toBeUndefined();
+    expect(result.reference).toBe('https://promptscore.dev/docs/rules#llm-prompt-review');
   });
 
   it('uses explicit issue_type values to structure failed guidance', async () => {
@@ -92,6 +93,7 @@ describe('llmPromptReviewRule', () => {
     expect(result.suggestion).toBe(
       'Resolve the conflicting instructions: Choose one output contract and remove the incompatible instruction.',
     );
+    expect(result.reference).toBe('https://promptscore.dev/docs/rules#llm-prompt-review-conflict');
   });
 
   it('falls back to issue-specific default suggestions when the client omits guidance', async () => {
@@ -119,5 +121,8 @@ describe('llmPromptReviewRule', () => {
     expect(result.message).toContain('Task framing:');
     expect(result.suggestion).toContain('Reframe the task:');
     expect(result.suggestion).toContain('reasonably complete and verify');
+    expect(result.reference).toBe(
+      'https://promptscore.dev/docs/rules#llm-prompt-review-task-framing',
+    );
   });
 });

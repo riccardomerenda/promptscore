@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 export const missingTaskRule: Rule = {
   id: 'missing-task',
@@ -19,6 +20,7 @@ export const missingTaskRule: Rule = {
       suggestion: passed
         ? undefined
         : 'State the task explicitly: "Your task is to..." or "Please <verb> <object>".',
+      reference: referenceFor('missing-task'),
       severity: 'error',
       category: 'clarity',
       weight: 1.5,

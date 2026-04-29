@@ -1,4 +1,5 @@
 import type { Rule } from '../types.js';
+import { referenceFor } from '../references.js';
 
 const SOFT_MAX = 1500;
 const HARD_MAX = 3000;
@@ -28,6 +29,7 @@ export const maxLengthRule: Rule = {
       suggestion: passed
         ? undefined
         : 'Look for repeated instructions, bundled unrelated tasks, or sections that can be summarized.',
+      reference: referenceFor('max-length'),
       severity: 'info',
       category: 'structure',
       weight: 1,
