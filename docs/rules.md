@@ -4,9 +4,17 @@ The current public release (`v0.4.0`) ships deterministic rules plus an experime
 
 Every rule populates a `reference` URL on its `RuleResult`. The reference points to a stable anchor on [promptscore.dev/docs/rules](https://promptscore.dev/docs/rules) so users can read the rationale and fix guidance without leaving their flow. CLI text, markdown, and batch reporters render the reference next to the suggestion. Profiles can override `reference` per rule (the built-in `claude` and `gpt` profiles already point a few rules at upstream provider docs).
 
+When a deterministic rule fails and a concrete prepend/append snippet is available, it also populates a `rewrite` field on the result. The snippet is structured as `{ title, snippet, placement }` so it can be rendered as a copy-pasteable block in the CLI, applied programmatically by editor integrations, or shown inline in the browser analyzer. Rules that need user-supplied content or a non-deterministic transformation (e.g. `max-length`, `vague-instruction`, `ambiguous-negation`, `all-caps-abuse`, `no-structured-format`) leave `rewrite` undefined; their `suggestion` text remains the authoritative guidance.
+
 Each rule produces a `RuleResult`:
 
 ```ts
+interface PromptRewrite {
+  title: string;
+  snippet: string;
+  placement: 'prepend' | 'append';
+}
+
 interface RuleResult {
   ruleId: string;
   passed: boolean;
@@ -14,6 +22,7 @@ interface RuleResult {
   message: string;
   suggestion?: string;
   reference?: string;
+  rewrite?: PromptRewrite;
   severity: 'error' | 'warning' | 'info';
   category: 'clarity' | 'structure' | 'specificity' | 'best-practice' | 'model-specific';
   weight: number;

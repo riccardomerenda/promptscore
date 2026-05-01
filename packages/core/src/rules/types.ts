@@ -13,6 +13,14 @@ export type RuleSeverity = 'error' | 'warning' | 'info';
 
 export type RuleType = 'deterministic' | 'llm';
 
+export type RewritePlacement = 'prepend' | 'append';
+
+export interface PromptRewrite {
+  title: string;
+  snippet: string;
+  placement: RewritePlacement;
+}
+
 export interface RuleResult {
   ruleId: string;
   passed: boolean;
@@ -20,6 +28,7 @@ export interface RuleResult {
   message: string;
   suggestion?: string;
   reference?: string;
+  rewrite?: PromptRewrite;
   severity: RuleSeverity;
   category: RuleCategory;
   weight: number;

@@ -1,5 +1,6 @@
 import type { Rule } from '../types.js';
 import { referenceFor } from '../references.js';
+import { rewriteFor } from '../rewrites.js';
 
 export const noExamplesRule: Rule = {
   id: 'no-examples',
@@ -22,6 +23,7 @@ export const noExamplesRule: Rule = {
         ? undefined
         : 'Add 1–3 concrete examples showing the input and the expected output.',
       reference: referenceFor('no-examples'),
+      rewrite: passed ? undefined : rewriteFor('no-examples'),
       severity: 'warning',
       category: 'best-practice',
       weight: 1,

@@ -1,5 +1,6 @@
 import type { Rule } from '../types.js';
 import { referenceFor } from '../references.js';
+import { rewriteFor } from '../rewrites.js';
 
 const MIN_WORDS = 20;
 
@@ -25,6 +26,7 @@ export const minLengthRule: Rule = {
         ? undefined
         : 'Add more detail about what you want, why, and how the output should look.',
       reference: referenceFor('min-length'),
+      rewrite: passed ? undefined : rewriteFor('min-length'),
       severity: 'warning',
       category: 'specificity',
       weight: 1,

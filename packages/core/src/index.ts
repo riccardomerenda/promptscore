@@ -18,6 +18,8 @@ export type {
   RuleResult,
   RuleSeverity,
   RuleType,
+  PromptRewrite,
+  RewritePlacement,
 } from './rules/types.js';
 
 export { loadPromptScoreConfig } from './config/loader.js';

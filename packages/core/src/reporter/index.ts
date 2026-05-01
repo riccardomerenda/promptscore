@@ -79,6 +79,18 @@ export function formatText(report: ScoreReport, options: TextReporterOptions = {
       if (result.reference) {
         out.push(c('dim', `         see: ${result.reference}`, color));
       }
+      if (result.rewrite) {
+        out.push(
+          c(
+            'dim',
+            `         rewrite (${result.rewrite.placement}): ${result.rewrite.title}`,
+            color,
+          ),
+        );
+        for (const line of result.rewrite.snippet.split('\n')) {
+          out.push(c('dim', `           ${line}`, color));
+        }
+      }
     }
     out.push('');
   }
@@ -139,6 +151,18 @@ export function formatBatchText(report: BatchReport, options: TextReporterOption
         if (result.reference) {
           out.push(c('dim', `           see: ${result.reference}`, color));
         }
+        if (result.rewrite) {
+          out.push(
+            c(
+              'dim',
+              `           rewrite (${result.rewrite.placement}): ${result.rewrite.title}`,
+              color,
+            ),
+          );
+          for (const line of result.rewrite.snippet.split('\n')) {
+            out.push(c('dim', `             ${line}`, color));
+          }
+        }
       }
     }
     out.push('');
@@ -192,6 +216,14 @@ export function formatMarkdown(report: ScoreReport): string {
         out.push('');
         out.push(`**Reference:** ${result.reference}`);
       }
+      if (result.rewrite) {
+        out.push('');
+        out.push(`**Rewrite (${result.rewrite.placement}):** ${result.rewrite.title}`);
+        out.push('');
+        out.push('```text');
+        out.push(result.rewrite.snippet);
+        out.push('```');
+      }
       out.push('');
     }
   }
@@ -244,6 +276,15 @@ export function formatBatchMarkdown(report: BatchReport): string {
         }
         if (result.reference) {
           out.push(`  Reference: ${result.reference}`);
+        }
+        if (result.rewrite) {
+          out.push(`  Rewrite (${result.rewrite.placement}): ${result.rewrite.title}`);
+          out.push('');
+          out.push('  ```text');
+          for (const line of result.rewrite.snippet.split('\n')) {
+            out.push(`  ${line}`);
+          }
+          out.push('  ```');
         }
       }
       out.push('');

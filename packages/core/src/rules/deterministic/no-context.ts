@@ -1,5 +1,6 @@
 import type { Rule } from '../types.js';
 import { referenceFor } from '../references.js';
+import { rewriteFor } from '../rewrites.js';
 
 export const noContextRule: Rule = {
   id: 'no-context',
@@ -21,6 +22,7 @@ export const noContextRule: Rule = {
         ? undefined
         : 'Explain the situation: who the user is, why they’re asking, and what the stakes are.',
       reference: referenceFor('no-context'),
+      rewrite: passed ? undefined : rewriteFor('no-context'),
       severity: 'info',
       category: 'specificity',
       weight: 1,

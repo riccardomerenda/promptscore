@@ -1,5 +1,6 @@
 import type { Rule } from '../types.js';
 import { referenceFor } from '../references.js';
+import { rewriteFor } from '../rewrites.js';
 
 export const noConstraintsRule: Rule = {
   id: 'no-constraints',
@@ -22,6 +23,7 @@ export const noConstraintsRule: Rule = {
         ? undefined
         : 'Add constraints like length limits, scope boundaries, or things the answer must include.',
       reference: referenceFor('no-constraints'),
+      rewrite: passed ? undefined : rewriteFor('no-constraints'),
       severity: 'info',
       category: 'specificity',
       weight: 1,

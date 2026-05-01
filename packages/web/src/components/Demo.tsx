@@ -171,6 +171,14 @@ function AnalyzerView(props: AnalyzerViewProps) {
                       Reference
                     </a>
                   ) : null}
+                  {result.rewrite ? (
+                    <div className="issue-rewrite">
+                      <div className="issue-rewrite-title">
+                        Rewrite ({result.rewrite.placement}): {result.rewrite.title}
+                      </div>
+                      <pre className="issue-rewrite-snippet">{result.rewrite.snippet}</pre>
+                    </div>
+                  ) : null}
                 </div>
               ))
             ) : (

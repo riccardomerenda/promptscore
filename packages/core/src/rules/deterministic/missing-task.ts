@@ -1,5 +1,6 @@
 import type { Rule } from '../types.js';
 import { referenceFor } from '../references.js';
+import { rewriteFor } from '../rewrites.js';
 
 export const missingTaskRule: Rule = {
   id: 'missing-task',
@@ -21,6 +22,7 @@ export const missingTaskRule: Rule = {
         ? undefined
         : 'State the task explicitly: "Your task is to..." or "Please <verb> <object>".',
       reference: referenceFor('missing-task'),
+      rewrite: passed ? undefined : rewriteFor('missing-task'),
       severity: 'error',
       category: 'clarity',
       weight: 1.5,

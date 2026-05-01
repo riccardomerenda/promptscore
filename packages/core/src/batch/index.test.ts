@@ -131,6 +131,69 @@ describe('batch reporting', () => {
     expect(text).toContain('see: https://promptscore.dev/docs/rules#vague-instruction');
     expect(markdown).toContain('Reference: https://promptscore.dev/docs/rules#vague-instruction');
   });
+
+  it('renders rewrite snippets in batch text and markdown findings', () => {
+    const batch = buildBatchReport([
+      {
+        path: 'examples/bad/short.txt',
+        report: createReport({
+          overall: 22,
+          profileName: 'claude',
+          results: [
+            createResult({
+              ruleId: 'missing-task',
+              passed: false,
+              severity: 'error',
+              rewrite: {
+                title: 'Add an explicit task',
+                placement: 'prepend',
+                snippet: 'Your task is to <verb> <object>.',
+              },
+            }),
+          ],
+        }),
+      },
+    ]);
+
+    const text = format(batch, 'text', { color: false });
+    const markdown = format(batch, 'markdown');
+    const json = format(batch, 'json');
+
+    expect(text).toContain('rewrite (prepend): Add an explicit task');
+    expect(text).toContain('Your task is to <verb> <object>.');
+    expect(markdown).toContain('Rewrite (prepend): Add an explicit task');
+    expect(markdown).toContain('Your task is to <verb> <object>.');
+    expect(json).toContain('"rewrite":');
+    expect(json).toContain('"placement": "prepend"');
+  });
+
+  it('renders rewrite snippets in single-file text and markdown findings', () => {
+    const report = createReport({
+      overall: 33,
+      profileName: 'gpt',
+      results: [
+        createResult({
+          ruleId: 'no-output-format',
+          passed: false,
+          severity: 'warning',
+          rewrite: {
+            title: 'Specify the output format',
+            placement: 'append',
+            snippet: '<output_format>\n  Return JSON.\n</output_format>',
+          },
+        }),
+      ],
+    });
+
+    const text = format(report, 'text', { color: false });
+    const markdown = format(report, 'markdown');
+
+    expect(text).toContain('rewrite (append): Specify the output format');
+    expect(text).toContain('Return JSON.');
+    expect(markdown).toContain('**Rewrite (append):** Specify the output format');
+    expect(markdown).toContain('```text');
+    expect(markdown).toContain('Return JSON.');
+  });
 });
 
 function createReport(input: {
@@ -161,5 +224,6 @@ function createResult(
     weight: overrides.weight ?? 1,
     suggestion: overrides.suggestion ?? 'Tighten the prompt.',
     reference: overrides.reference,
+    rewrite: overrides.rewrite,
   };
 }
