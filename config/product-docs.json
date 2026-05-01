@@ -11,12 +11,18 @@
       "browser analyzer",
       "project config discovery",
       "directory and glob batch workflows",
-      "experimental opt-in LLM prompt review"
+      "experimental opt-in LLM prompt review",
+      "reference-backed explanations on every rule result",
+      "rewrite suggestions on supported deterministic rules"
     ],
-    "roadmapItems": ["rewrite suggestions", "richer browser workflows", "more profiles"]
+    "roadmapItems": [
+      "stronger LLM regression fixtures",
+      "richer browser workflows",
+      "more profiles"
+    ]
   },
   "baseline": {
-    "releaseDate": "2026-04-14",
+    "releaseDate": "2026-05-01",
     "includes": [
       "12 deterministic rules",
       "model profiles for `_base`, `claude`, and `gpt`",
@@ -26,11 +32,13 @@
       "directory and glob analysis with aggregate batch reporting",
       "experimental opt-in LLM prompt review with provider configuration",
       "LLM regression benchmark fixtures",
+      "reference-backed explanations on every rule result",
+      "rewrite suggestions for seven deterministic rules (concrete prepend/append snippets)",
       "a browser analyzer on `promptscore.dev`",
       "a first-class `/docs` section on `promptscore.dev`",
       "docs, examples, CI validation, and an automated Changesets-based release workflow"
     ],
-    "summary": "This is a real MVP. It is useful today, but it is still missing richer LLM guidance, rewrite suggestions, browser workflows, editor integrations, suppression mechanics, and team collaboration."
+    "summary": "This is a real MVP. It is useful today, but it is still missing richer LLM guidance, broader rewrite coverage, browser workflows, editor integrations, suppression mechanics, and team collaboration."
   },
   "releasePlan": [
     {
@@ -99,7 +107,7 @@
   "immediateNextMoves": [
     "Keep docs, site copy, and changelogs aligned with the shipped version.",
     "Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.",
-    "Expand the `v0.4.x` line around reference-backed explanations, rewrite suggestions, and stronger LLM regression fixtures before expanding into hosted features.",
+    "Close out the `v0.4.x` line with stronger LLM regression fixtures and broader rewrite coverage before expanding into hosted features.",
     "Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently."
   ]
 }

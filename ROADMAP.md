@@ -16,7 +16,7 @@ PromptScore is not trying to become a general agent platform, tracing tool, or f
 ## Current Baseline
 
 <!-- generated:roadmap-baseline:start -->
-As of April 14, 2026, PromptScore v0.4.4 includes:
+As of May 1, 2026, PromptScore v0.4.4 includes:
 
 - 12 deterministic rules
 - model profiles for `_base`, `claude`, and `gpt`
@@ -26,11 +26,13 @@ As of April 14, 2026, PromptScore v0.4.4 includes:
 - directory and glob analysis with aggregate batch reporting
 - experimental opt-in LLM prompt review with provider configuration
 - LLM regression benchmark fixtures
+- reference-backed explanations on every rule result
+- rewrite suggestions for seven deterministic rules (concrete prepend/append snippets)
 - a browser analyzer on `promptscore.dev`
 - a first-class `/docs` section on `promptscore.dev`
 - docs, examples, CI validation, and an automated Changesets-based release workflow
 
-This is a real MVP. It is useful today, but it is still missing richer LLM guidance, rewrite suggestions, browser workflows, editor integrations, suppression mechanics, and team collaboration.
+This is a real MVP. It is useful today, but it is still missing richer LLM guidance, broader rewrite coverage, browser workflows, editor integrations, suppression mechanics, and team collaboration.
 <!-- generated:roadmap-baseline:end -->
 
 ## Versioning And Releases
@@ -102,6 +104,6 @@ PromptScore should not declare `v1.0.0` until the following are true:
 <!-- generated:roadmap-next-moves:start -->
 - Keep docs, site copy, and changelogs aligned with the shipped version.
 - Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.
-- Expand the `v0.4.x` line around reference-backed explanations, rewrite suggestions, and stronger LLM regression fixtures before expanding into hosted features.
+- Close out the `v0.4.x` line with stronger LLM regression fixtures and broader rewrite coverage before expanding into hosted features.
 - Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently.
 <!-- generated:roadmap-next-moves:end -->
