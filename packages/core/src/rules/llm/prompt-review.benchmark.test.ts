@@ -86,6 +86,37 @@ describe('llmPromptReviewRule benchmark fixtures', () => {
       expect(request.instructions).toContain('issue_type');
     }
   });
+
+  it('exercises every issue type with at least two fixtures', () => {
+    const counts: Record<PromptReviewIssueType, number> = {
+      ambiguity: 0,
+      conflict: 0,
+      grounding: 0,
+      'success-criteria': 0,
+      'task-framing': 0,
+      general: 0,
+    };
+
+    for (const fixture of promptReviewBenchmarkCases) {
+      counts[fixture.expectedIssueType] += 1;
+    }
+
+    for (const issueType of Object.keys(counts) as PromptReviewIssueType[]) {
+      expect(
+        counts[issueType],
+        `expected at least 2 fixtures for issue type ${issueType}`,
+      ).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it('exercises both pass and fail outcomes broadly across fixtures', () => {
+    const passed = promptReviewBenchmarkCases.filter((fixture) => fixture.expectedPassed);
+    const failed = promptReviewBenchmarkCases.filter((fixture) => !fixture.expectedPassed);
+
+    expect(passed.length).toBeGreaterThanOrEqual(2);
+    expect(failed.length).toBeGreaterThanOrEqual(passed.length);
+    expect(promptReviewBenchmarkCases.length).toBeGreaterThanOrEqual(12);
+  });
 });
 
 async function runBenchmarkCase(fixture: PromptReviewBenchmarkCase): Promise<BenchmarkRun> {
