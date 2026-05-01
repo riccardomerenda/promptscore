@@ -17,7 +17,7 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 ## Status
 
 <!-- generated:product-status:start -->
-PromptScore is in early development and the current shipped version is **v0.4.3**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, directory and glob batch workflows, and experimental opt-in LLM prompt review are available today. rewrite suggestions, richer browser workflows, and more profiles are still on the roadmap.
+PromptScore is in early development and the current shipped version is **v0.4.4**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, directory and glob batch workflows, and experimental opt-in LLM prompt review are available today. rewrite suggestions, richer browser workflows, and more profiles are still on the roadmap.
 <!-- generated:product-status:end -->
 
 ---
