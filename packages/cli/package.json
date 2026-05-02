@@ -1,6 +1,6 @@
 {
   "name": "@promptscore/cli",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "CLI for PromptScore — static analysis for LLM prompts.",
   "license": "MIT",
   "author": "Riccardo Merenda",
@@ -34,7 +34,7 @@
     "clean": "rimraf dist .turbo"
   },
   "dependencies": {
-    "@promptscore/core": "^0.4.7",
+    "@promptscore/core": "^0.4.8",
     "commander": "^12.1.0"
   },
   "devDependencies": {

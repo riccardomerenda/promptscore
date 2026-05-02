@@ -1,6 +1,6 @@
 {
   "name": "@promptscore/core",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Static analysis for LLM prompts. Core library.",
   "license": "MIT",
   "author": "Riccardo Merenda",
