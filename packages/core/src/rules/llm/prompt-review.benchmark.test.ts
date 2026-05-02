@@ -117,6 +117,25 @@ describe('llmPromptReviewRule benchmark fixtures', () => {
     expect(failed.length).toBeGreaterThanOrEqual(passed.length);
     expect(promptReviewBenchmarkCases.length).toBeGreaterThanOrEqual(12);
   });
+
+  it('attaches a rewrite to every failed non-general fixture and never to pass cases', async () => {
+    const runs = await Promise.all(promptReviewBenchmarkCases.map(runBenchmarkCase));
+
+    for (const { fixture, result } of runs) {
+      const isFailedSpecific = !fixture.expectedPassed && fixture.expectedIssueType !== 'general';
+
+      if (isFailedSpecific) {
+        expect(result.rewrite, `${fixture.id} should expose a rewrite`).toBeDefined();
+        expect(['prepend', 'append']).toContain(result.rewrite!.placement);
+        expect(result.rewrite!.snippet.length).toBeGreaterThan(0);
+      } else {
+        expect(
+          result.rewrite,
+          `${fixture.id} (passed=${fixture.expectedPassed}, issue=${fixture.expectedIssueType}) should have no rewrite`,
+        ).toBeUndefined();
+      }
+    }
+  });
 });
 
 async function runBenchmarkCase(fixture: PromptReviewBenchmarkCase): Promise<BenchmarkRun> {

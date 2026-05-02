@@ -125,4 +125,112 @@ describe('llmPromptReviewRule', () => {
       'https://promptscore.dev/docs/rules#llm-prompt-review-task-framing',
     );
   });
+
+  it('attaches a per-issue rewrite snippet on each non-general failure', async () => {
+    const cases: Array<{
+      issueType: string;
+      expectedTitle: string;
+      expectedPlacement: 'prepend' | 'append';
+    }> = [
+      {
+        issueType: 'ambiguity',
+        expectedTitle: 'ambiguous parts explicit',
+        expectedPlacement: 'append',
+      },
+      { issueType: 'conflict', expectedTitle: 'one consistent set', expectedPlacement: 'append' },
+      { issueType: 'grounding', expectedTitle: 'missing grounding', expectedPlacement: 'append' },
+      {
+        issueType: 'success-criteria',
+        expectedTitle: 'measurable success criteria',
+        expectedPlacement: 'append',
+      },
+      {
+        issueType: 'task-framing',
+        expectedTitle: 'verifiable',
+        expectedPlacement: 'prepend',
+      },
+    ];
+
+    for (const testCase of cases) {
+      const llm: LlmClient = {
+        provider: 'test',
+        model: 'stub',
+        async generateText() {
+          return {
+            provider: 'test',
+            model: 'stub',
+            text: JSON.stringify({
+              passed: false,
+              score: 40,
+              issue_type: testCase.issueType,
+              message: 'fixture body',
+              suggestion: 'fixture suggestion',
+            }),
+          };
+        },
+      };
+
+      const ast = parsePrompt('whatever the prompt is for the test');
+      const result = await llmPromptReviewRule.check({ ast, profile, llm });
+
+      expect(result.rewrite, `${testCase.issueType} should expose a rewrite`).toBeDefined();
+      expect(result.rewrite!.placement).toBe(testCase.expectedPlacement);
+      expect(result.rewrite!.title.toLowerCase()).toContain(testCase.expectedTitle.toLowerCase());
+      expect(result.rewrite!.snippet.length).toBeGreaterThan(0);
+    }
+  });
+
+  it('omits the rewrite when the LLM passes or returns a generic failure', async () => {
+    const passingClient: LlmClient = {
+      provider: 'test',
+      model: 'stub',
+      async generateText() {
+        return {
+          provider: 'test',
+          model: 'stub',
+          text: JSON.stringify({
+            passed: true,
+            score: 90,
+            issue_type: 'general',
+            message: 'Looks good.',
+            suggestion: '',
+          }),
+        };
+      },
+    };
+
+    const passing = await llmPromptReviewRule.check({
+      ast: parsePrompt('You are a tutor. Your task is to summarize. Return JSON.'),
+      profile,
+      llm: passingClient,
+    });
+    expect(passing.passed).toBe(true);
+    expect(passing.rewrite).toBeUndefined();
+
+    const genericFailClient: LlmClient = {
+      provider: 'test',
+      model: 'stub',
+      async generateText() {
+        return {
+          provider: 'test',
+          model: 'stub',
+          text: JSON.stringify({
+            passed: false,
+            score: 60,
+            issue_type: 'general',
+            message: 'Could be tighter overall.',
+            suggestion: 'Tighten the prompt overall.',
+          }),
+        };
+      },
+    };
+
+    const genericFail = await llmPromptReviewRule.check({
+      ast: parsePrompt('Make it nicer.'),
+      profile,
+      llm: genericFailClient,
+    });
+    expect(genericFail.passed).toBe(false);
+    expect(genericFail.rewrite).toBeUndefined();
+  });
 });

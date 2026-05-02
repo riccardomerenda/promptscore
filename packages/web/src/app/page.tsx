@@ -83,9 +83,9 @@ export default function Home() {
           <div className="step">
             <h3>Get actionable feedback</h3>
             <p>
-              Each finding includes a concrete fix suggestion. Supported deterministic rules also
-              attach a copy-pasteable rewrite snippet, and supported profiles can attach Claude- or
-              GPT-specific references.
+              Each finding includes a concrete fix suggestion. Supported rules — deterministic and
+              the opt-in LLM review — also attach a copy-pasteable rewrite snippet, and supported
+              profiles can attach Claude- or GPT-specific references.
             </p>
           </div>
         </div>
@@ -135,9 +135,9 @@ export default function Home() {
             <div className="feature-icon yellow">&#x26A0;</div>
             <h3>Actionable Warnings</h3>
             <p>
-              Each failing rule includes a concrete fix suggestion. Seven deterministic rules also
-              ship a copy-pasteable rewrite snippet, and supported profiles can link to official
-              model docs.
+              Each failing rule includes a concrete fix suggestion. Seven deterministic rules and
+              the opt-in LLM prompt review also ship copy-pasteable rewrite snippets, and supported
+              profiles can link to official model docs.
             </p>
           </div>
           <div className="feature-card">

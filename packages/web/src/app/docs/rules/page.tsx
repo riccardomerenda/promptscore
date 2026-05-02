@@ -156,6 +156,7 @@ interface IssueEntry {
   label: string;
   summary: string;
   fix: string;
+  rewrite: { placement: RewritePlacement; title: string; snippet: string };
 }
 
 const LLM_ISSUE_TYPES: IssueEntry[] = [
@@ -165,6 +166,12 @@ const LLM_ISSUE_TYPES: IssueEntry[] = [
     summary:
       'The prompt has multiple plausible readings, missing scope, or under-specified inputs.',
     fix: 'Specify the task, input, audience, constraints, and expected output.',
+    rewrite: {
+      placement: 'append',
+      title: 'Make the ambiguous parts explicit',
+      snippet:
+        '<inputs>\n  <input variable> = <where the data comes from>\n</inputs>\n\n<scope>\n  In scope: <what to consider>\n  Out of scope: <what to ignore>\n</scope>\n\n<expected_output>\n  Shape: <exact format>\n  Audience: <who is reading>\n</expected_output>',
+    },
   },
   {
     id: 'llm-prompt-review-conflict',
@@ -172,6 +179,12 @@ const LLM_ISSUE_TYPES: IssueEntry[] = [
     summary:
       'The prompt asks for incompatible behaviors (e.g. JSON and plain text) or contradicts itself across sections.',
     fix: 'Choose one instruction path and remove the incompatible wording.',
+    rewrite: {
+      placement: 'append',
+      title: 'Pick one consistent set of instructions',
+      snippet:
+        '<resolved_instructions>\n  Output format: <ONE choice — JSON | markdown | plain text>\n  Length: <ONE target — exact words / characters / sentences>\n  Tone: <ONE register — formal | casual | technical>\n</resolved_instructions>\n\nRemove any earlier wording that contradicts these resolved instructions.',
+    },
   },
   {
     id: 'llm-prompt-review-grounding',
@@ -179,12 +192,24 @@ const LLM_ISSUE_TYPES: IssueEntry[] = [
     summary:
       'The prompt expects facts, citations, or jurisdiction-specific knowledge without supplying source material or scope.',
     fix: 'Provide source material, scope, assumptions, and how the model should handle uncertainty.',
+    rewrite: {
+      placement: 'append',
+      title: 'Add the missing grounding',
+      snippet:
+        '<grounding>\n  Sources: <attached docs, URLs, or {{variable}} placeholders>\n  Scope: <jurisdiction, time period, domain>\n  Assumptions: <what the model can take as given>\n  Uncertainty: If the source material is silent on a point, say "not stated in the provided material" rather than guessing.\n</grounding>',
+    },
   },
   {
     id: 'llm-prompt-review-success-criteria',
     label: 'Success criteria',
     summary: 'The prompt does not state what a good answer must include, avoid, or optimize for.',
     fix: 'State what a good answer must include, avoid, and optimize for.',
+    rewrite: {
+      placement: 'append',
+      title: 'Define measurable success criteria',
+      snippet:
+        '<success_criteria>\n  A good answer must include: <required elements>\n  A good answer must avoid: <forbidden elements or patterns>\n  Optimize for: <one explicit metric — accuracy | brevity | citation density | etc.>\n</success_criteria>',
+    },
   },
   {
     id: 'llm-prompt-review-task-framing',
@@ -192,6 +217,12 @@ const LLM_ISSUE_TYPES: IssueEntry[] = [
     summary:
       'The task is unrealistic, overbroad, or asks for guarantees the model cannot reasonably provide.',
     fix: 'Narrow the task to something the model can reasonably complete and verify.',
+    rewrite: {
+      placement: 'prepend',
+      title: 'Reframe the task into something verifiable',
+      snippet:
+        'Narrow the task to a single deliverable: <one concrete output>.\nOut of scope: <items the model should not attempt>.\nA reviewer can verify success by checking: <one observable check>.',
+    },
   },
 ];
 
@@ -269,6 +300,14 @@ interface RuleResult {
           summarization). For those rules, the <code>fix</code> message is still authoritative.
         </p>
         <p>
+          The opt-in <code>llm-prompt-review</code> rule also emits a rewrite — one per non-generic
+          issue type (<em>ambiguity</em>, <em>conflict</em>, <em>grounding</em>,{' '}
+          <em>success criteria</em>, <em>task framing</em>). When the LLM passes the prompt, or
+          flags it under the catch-all <em>general</em> category, no rewrite is attached and the
+          existing message and suggestion remain authoritative. The five per-issue snippets appear
+          alongside each issue label below.
+        </p>
+        <p>
           The CLI text and markdown reporters render the snippet alongside the suggestion and
           reference. The browser analyzer surfaces the same snippet in each finding card. The JSON
           output contains the field verbatim, so editor integrations and CI tooling can apply
@@ -321,6 +360,12 @@ interface RuleResult {
             <p>
               <strong>Fix:</strong> {issue.fix}
             </p>
+            <p>
+              <strong>Rewrite ({issue.rewrite.placement}):</strong> {issue.rewrite.title}
+            </p>
+            <pre className="docs-code-block">
+              <code>{issue.rewrite.snippet}</code>
+            </pre>
           </div>
         ))}
       </section>

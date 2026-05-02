@@ -6,6 +6,8 @@ Every rule populates a `reference` URL on its `RuleResult`. The reference points
 
 When a deterministic rule fails and a concrete prepend/append snippet is available, it also populates a `rewrite` field on the result. The snippet is structured as `{ title, snippet, placement }` so it can be rendered as a copy-pasteable block in the CLI, applied programmatically by editor integrations, or shown inline in the browser analyzer. Rules that need user-supplied content or a non-deterministic transformation (e.g. `max-length`, `vague-instruction`, `ambiguous-negation`, `all-caps-abuse`, `no-structured-format`) leave `rewrite` undefined; their `suggestion` text remains the authoritative guidance.
 
+The opt-in `llm-prompt-review` rule also emits a rewrite when it fails with a specific issue type (ambiguity, conflict, grounding, success-criteria, task-framing). The catch-all `general` issue type and any pass result leave `rewrite` undefined.
+
 Each rule produces a `RuleResult`:
 
 ```ts

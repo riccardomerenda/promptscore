@@ -1,5 +1,6 @@
 import type { LlmRule } from '../types.js';
 import { LLM_ISSUE_REFERENCES, referenceFor } from '../references.js';
+import { llmIssueRewriteFor } from '../rewrites.js';
 
 export type PromptReviewIssueType =
   | 'ambiguity'
@@ -90,6 +91,7 @@ export const llmPromptReviewRule: LlmRule = {
       reference: passed
         ? referenceFor('llm-prompt-review')
         : (LLM_ISSUE_REFERENCES[issueType] ?? referenceFor('llm-prompt-review')),
+      rewrite: passed ? undefined : llmIssueRewriteFor(issueType),
       severity: 'info',
       category: 'model-specific',
       weight: 1,

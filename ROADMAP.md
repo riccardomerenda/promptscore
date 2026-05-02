@@ -27,12 +27,12 @@ As of May 1, 2026, PromptScore v0.4.6 includes:
 - experimental opt-in LLM prompt review with provider configuration
 - LLM regression benchmark fixtures
 - reference-backed explanations on every rule result
-- rewrite suggestions for seven deterministic rules (concrete prepend/append snippets)
+- rewrite suggestions for seven deterministic rules and five LLM-review issue types (concrete prepend/append snippets)
 - a browser analyzer on `promptscore.dev`
 - a first-class `/docs` section on `promptscore.dev`
 - docs, examples, CI validation, and an automated Changesets-based release workflow
 
-This is a real MVP. It is useful today, but it is still missing richer LLM guidance, broader rewrite coverage, browser workflows, editor integrations, suppression mechanics, and team collaboration.
+This is a real MVP. It is useful today, but it is still missing richer browser workflows, editor integrations, suppression mechanics, and team collaboration.
 <!-- generated:roadmap-baseline:end -->
 
 ## Versioning And Releases
@@ -104,6 +104,6 @@ PromptScore should not declare `v1.0.0` until the following are true:
 <!-- generated:roadmap-next-moves:start -->
 - Keep docs, site copy, and changelogs aligned with the shipped version.
 - Continue strengthening the release checklist, changelog discipline, and browser/CLI parity.
-- Close out the `v0.4.x` line with stronger LLM regression fixtures and broader rewrite coverage before expanding into hosted features.
+- Begin shaping the `v0.5` hosted experience now that the `v0.4.x` line — reference-backed explanations, rewrite suggestions across deterministic and LLM rules, and stronger LLM regression fixtures — has shipped.
 - Keep commercial details private until the hosted `v0.5` scope is real enough to announce confidently.
 <!-- generated:roadmap-next-moves:end -->
