@@ -84,11 +84,19 @@ function applyRoadmapTransforms(source) {
 }
 
 function renderReadmeStatus() {
-  return [
-    `PromptScore is in ${productDocs.status.phase} and the current shipped version is **${versionLabel}**.`,
-    `The ${joinList(productDocs.status.availableToday)} are available today.`,
-    `${joinList(productDocs.status.roadmapItems)} are still on the roadmap.`,
-  ].join(' ');
+  const lines = [
+    `PromptScore is in ${productDocs.status.phase}. Current shipped version: **${versionLabel}**.`,
+    '',
+    '**Available today:**',
+    '',
+    ...productDocs.status.availableToday.map((item) => `- ${item}`),
+    '',
+    '**On the roadmap:**',
+    '',
+    ...productDocs.status.roadmapItems.map((item) => `- ${item}`),
+  ];
+
+  return lines.join('\n');
 }
 
 function renderRoadmapBaseline() {

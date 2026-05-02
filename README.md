@@ -2,7 +2,15 @@
 
 **Static analysis for LLM prompts.** ESLint, but for prompts.
 
+[![npm version](https://img.shields.io/npm/v/@promptscore/cli.svg?label=%40promptscore%2Fcli)](https://www.npmjs.com/package/@promptscore/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@promptscore/cli.svg)](https://www.npmjs.com/package/@promptscore/cli)
+[![CI](https://img.shields.io/github/actions/workflow/status/riccardomerenda/promptscore/ci.yml?branch=main&label=CI)](https://github.com/riccardomerenda/promptscore/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/riccardomerenda/promptscore.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](package.json)
+
 PromptScore analyzes a prompt *before* it is sent to a model and returns a score plus actionable feedback: what is missing, what is ambiguous, and what you could improve, with references to model-specific best practices.
+
+> **Try it in your browser** &mdash; no install, no signup, no API key: <https://promptscore.dev>
 
 > This is **not** an LLM evaluation framework. It does not measure output quality. It scores the *input* based on structural analysis and known prompt-engineering best practices.
 
@@ -17,7 +25,28 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 ## Status
 
 <!-- generated:product-status:start -->
-PromptScore is in early development and the current shipped version is **v0.4.8**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, directory and glob batch workflows, experimental opt-in LLM prompt review, reference-backed explanations on every rule result, rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review, and an official GitHub Action for prompt linting in CI are available today. richer browser workflows and more profiles are still on the roadmap.
+PromptScore is in early development. Current shipped version: **v0.4.8**.
+
+**Available today:**
+
+- deterministic rules
+- library
+- CLI
+- profiles
+- docs
+- landing page
+- browser analyzer
+- project config discovery
+- directory and glob batch workflows
+- experimental opt-in LLM prompt review
+- reference-backed explanations on every rule result
+- rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review
+- an official GitHub Action for prompt linting in CI
+
+**On the roadmap:**
+
+- richer browser workflows
+- more profiles
 <!-- generated:product-status:end -->
 
 ---
@@ -42,7 +71,7 @@ PromptScore currently distributes public packages through npm.
 | [`@promptscore/core`](https://www.npmjs.com/package/@promptscore/core) | Core analysis library for Node and browser integrations | `npm install @promptscore/core` |
 | `@promptscore/web` | Static site package for `promptscore.dev` | Not published |
 
-GitHub Releases are used for versioned release notes, but npm is the canonical package registry for installation. The repository's GitHub Packages tab may remain empty because PromptScore does not currently publish to GitHub Packages.
+GitHub Releases carry the versioned release notes; npm is the canonical install path. See [`docs/release-process.md`](docs/release-process.md) for how the release pipeline works.
 
 ## Usage
 
@@ -208,18 +237,6 @@ Run the CLI locally:
 node packages/cli/dist/index.js analyze examples/good/classifier.txt --model claude
 node packages/cli/dist/index.js analyze examples/
 ```
-
-## CI And Release Pipeline
-
-PromptScore uses GitHub Actions plus Changesets for CI and releases.
-
-- `.github/workflows/ci.yml` runs on pushes and pull requests to `main` across Node 18, 20, and 22. It installs dependencies, builds, lints, typechecks, tests, and runs `npm run format:check`.
-- `.github/workflows/release.yml` runs on pushes to `main`. It uses `changesets/action` to either open or update a `Version Packages` PR, or publish packages when release changesets are present.
-- `npm run version-packages` applies the version bump, updates changelogs, syncs the shared product version into the CLI and web app, and refreshes `package-lock.json`.
-- After a successful publish, the release workflow creates a GitHub release tagged as `vX.Y.Z`.
-- `packages/web` is a static Next.js export for `promptscore.dev`, but this repository does not currently include a GitHub Actions deploy workflow for the site itself.
-
-For the repository-side automation and what to update manually, see [`docs/release-process.md`](docs/release-process.md).
 
 ## Roadmap
 
