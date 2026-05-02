@@ -39,9 +39,25 @@ const INSTALL_CODES: Record<string, CodeLine[]> = {
     { type: 'code', text: '  console.log(report.results);' },
     { type: 'code', text: '}' },
   ],
+  'github action': [
+    { type: 'comment', text: '# .github/workflows/promptscore.yml' },
+    { type: 'code', text: 'name: PromptScore' },
+    { type: 'code', text: 'on: [pull_request, push]' },
+    { type: 'code', text: 'jobs:' },
+    { type: 'code', text: '  prompt-lint:' },
+    { type: 'code', text: '    runs-on: ubuntu-latest' },
+    { type: 'code', text: '    steps:' },
+    { type: 'code', text: '      - uses: actions/checkout@v6' },
+    { type: 'code', text: '      - uses: riccardomerenda/promptscore@main' },
+    { type: 'code', text: '        with:' },
+    { type: 'code', text: '          inputs: prompts/' },
+    { type: 'code', text: '          model: claude' },
+    { type: 'code', text: '          format: markdown' },
+    { type: 'code', text: '          fail-on: warning' },
+  ],
 };
 
-const TABS = ['npx', 'npm', 'library'] as const;
+const TABS = ['npx', 'npm', 'library', 'github action'] as const;
 
 export function InstallTabs() {
   const [active, setActive] = useState<(typeof TABS)[number]>('npx');

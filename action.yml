@@ -1,0 +1,82 @@
+name: 'PromptScore'
+description: 'Lint your prompts before they reach a model. Static analysis for LLM prompts.'
+author: 'riccardomerenda'
+
+branding:
+  icon: 'check-square'
+  color: 'purple'
+
+inputs:
+  inputs:
+    description: 'Files, directories, or globs to analyze. Whitespace-separated. Defaults to "prompts/".'
+    required: false
+    default: 'prompts/'
+  model:
+    description: 'Profile name. Built-in: _base, claude, gpt. Custom profiles supported via project config.'
+    required: false
+    default: '_base'
+  format:
+    description: 'Report format: text, markdown, or json. Markdown is also appended to the GitHub Actions job summary.'
+    required: false
+    default: 'text'
+  fail-on:
+    description: 'Severity threshold that fails the action: error, warning, info, or none.'
+    required: false
+    default: 'error'
+  config:
+    description: 'Path to a PromptScore config file. Defaults to project discovery.'
+    required: false
+    default: ''
+  rules:
+    description: 'Comma-separated rule IDs to include. Empty means all rules from the active profile.'
+    required: false
+    default: ''
+  include-llm:
+    description: 'Run LLM-backed rules. Requires the relevant API key in the runner environment.'
+    required: false
+    default: 'false'
+  cli-version:
+    description: 'Version of @promptscore/cli to install (npm semver tag or version). Defaults to latest.'
+    required: false
+    default: 'latest'
+  node-version:
+    description: 'Node.js version to use on the runner.'
+    required: false
+    default: '20'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Run PromptScore
+      shell: bash
+      env:
+        PS_INPUTS: ${{ inputs.inputs }}
+        PS_MODEL: ${{ inputs.model }}
+        PS_FORMAT: ${{ inputs.format }}
+        PS_FAIL_ON: ${{ inputs.fail-on }}
+        PS_CONFIG: ${{ inputs.config }}
+        PS_RULES: ${{ inputs.rules }}
+        PS_INCLUDE_LLM: ${{ inputs.include-llm }}
+        PS_CLI_VERSION: ${{ inputs.cli-version }}
+      run: |
+        set -euo pipefail
+
+        flags=( "--model" "$PS_MODEL" "--format" "$PS_FORMAT" "--fail-on" "$PS_FAIL_ON" "--no-color" )
+        if [ -n "$PS_CONFIG" ]; then flags+=( "--config" "$PS_CONFIG" ); fi
+        if [ -n "$PS_RULES" ]; then flags+=( "--rules" "$PS_RULES" ); fi
+        if [ "$PS_INCLUDE_LLM" = "true" ]; then flags+=( "--llm" ); fi
+
+        # Whitespace-split inputs so users can pass multiple files / dirs / globs.
+        read -ra paths <<< "$PS_INPUTS"
+
+        if [ "$PS_FORMAT" = "markdown" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+          npx -y "@promptscore/cli@${PS_CLI_VERSION}" analyze "${flags[@]}" "${paths[@]}" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+        else
+          npx -y "@promptscore/cli@${PS_CLI_VERSION}" analyze "${flags[@]}" "${paths[@]}"
+        fi

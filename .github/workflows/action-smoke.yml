@@ -1,0 +1,53 @@
+name: Action Smoke
+
+on:
+  push:
+    paths:
+      - 'action.yml'
+      - 'examples/**'
+      - '.github/workflows/action-smoke.yml'
+  pull_request:
+    paths:
+      - 'action.yml'
+      - 'examples/**'
+      - '.github/workflows/action-smoke.yml'
+  workflow_dispatch:
+
+jobs:
+  good-prompts-pass:
+    name: Good prompts should pass
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run PromptScore on good examples
+        uses: ./
+        with:
+          inputs: examples/good/
+          model: _base
+          format: markdown
+          fail-on: error
+
+  bad-prompts-fail:
+    name: Bad prompts should fail (--fail-on warning)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run PromptScore on bad examples (expecting failure)
+        id: run
+        continue-on-error: true
+        uses: ./
+        with:
+          inputs: examples/bad/
+          model: _base
+          format: text
+          fail-on: warning
+
+      - name: Verify the action correctly failed
+        if: steps.run.outcome == 'success'
+        run: |
+          echo "::error::Expected the bad-examples run to fail with --fail-on warning, but it succeeded."
+          exit 1

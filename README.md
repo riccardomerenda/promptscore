@@ -17,7 +17,7 @@ PromptScore analyzes a prompt *before* it is sent to a model and returns a score
 ## Status
 
 <!-- generated:product-status:start -->
-PromptScore is in early development and the current shipped version is **v0.4.7**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, directory and glob batch workflows, experimental opt-in LLM prompt review, reference-backed explanations on every rule result, and rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review are available today. richer browser workflows and more profiles are still on the roadmap.
+PromptScore is in early development and the current shipped version is **v0.4.7**. The deterministic rules, library, CLI, profiles, docs, landing page, browser analyzer, project config discovery, directory and glob batch workflows, experimental opt-in LLM prompt review, reference-backed explanations on every rule result, rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review, and an official GitHub Action for prompt linting in CI are available today. richer browser workflows and more profiles are still on the roadmap.
 <!-- generated:product-status:end -->
 
 ---
@@ -116,6 +116,22 @@ const report = await analyze(
 console.log(format(report, 'text'));
 console.log('Overall:', report.overall);
 ```
+
+## GitHub Action
+
+Drop the official Action into any GitHub Actions workflow to lint prompts in CI:
+
+```yaml
+- uses: actions/checkout@v6
+- uses: riccardomerenda/promptscore@main
+  with:
+    inputs: prompts/
+    model: claude
+    format: markdown
+    fail-on: warning
+```
+
+It wraps `@promptscore/cli`, exits non-zero when findings cross the configured `fail-on` severity, and (when `format: markdown`) appends the report to the GitHub Actions job summary so reviewers see findings inline. See [`docs/github-action.md`](docs/github-action.md) for inputs, common patterns, and pinning recipes.
 
 ## Project config
 

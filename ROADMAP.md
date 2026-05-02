@@ -28,6 +28,7 @@ As of May 1, 2026, PromptScore v0.4.7 includes:
 - LLM regression benchmark fixtures
 - reference-backed explanations on every rule result
 - rewrite suggestions for seven deterministic rules and five LLM-review issue types (concrete prepend/append snippets)
+- an official GitHub Action (`riccardomerenda/promptscore`) that wraps the CLI for CI use
 - a browser analyzer on `promptscore.dev`
 - a first-class `/docs` section on `promptscore.dev`
 - docs, examples, CI validation, and an automated Changesets-based release workflow

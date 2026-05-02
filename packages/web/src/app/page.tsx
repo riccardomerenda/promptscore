@@ -127,8 +127,9 @@ export default function Home() {
             <div className="feature-icon blue">&#x2192;</div>
             <h3>CI/CD Ready</h3>
             <p>
-              Use the CLI in CI today. It can scan prompt directories and exits non-zero when
-              findings meet your configured failure threshold.
+              Drop the official <code>riccardomerenda/promptscore</code> Action into any GitHub
+              workflow, or use the CLI directly. Both scan prompt directories and exit non-zero when
+              findings cross your configured failure threshold.
             </p>
           </div>
           <div className="feature-card">

@@ -44,6 +44,11 @@ export const docsNavigation: DocsNavSection[] = [
         title: 'Browser Analyzer',
         description: 'Use the in-browser analyzer and the browser-safe core entry.',
       },
+      {
+        href: '/docs/github-action',
+        title: 'GitHub Action',
+        description: 'Drop a single composite Action into any repo to lint prompts in CI.',
+      },
     ],
   },
   {

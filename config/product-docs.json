@@ -13,7 +13,8 @@
       "directory and glob batch workflows",
       "experimental opt-in LLM prompt review",
       "reference-backed explanations on every rule result",
-      "rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review"
+      "rewrite suggestions on supported deterministic rules and the opt-in LLM prompt review",
+      "an official GitHub Action for prompt linting in CI"
     ],
     "roadmapItems": ["richer browser workflows", "more profiles"]
   },
@@ -30,6 +31,7 @@
       "LLM regression benchmark fixtures",
       "reference-backed explanations on every rule result",
       "rewrite suggestions for seven deterministic rules and five LLM-review issue types (concrete prepend/append snippets)",
+      "an official GitHub Action (`riccardomerenda/promptscore`) that wraps the CLI for CI use",
       "a browser analyzer on `promptscore.dev`",
       "a first-class `/docs` section on `promptscore.dev`",
       "docs, examples, CI validation, and an automated Changesets-based release workflow"
